@@ -855,6 +855,57 @@ img{max-width:100%;}
 .sk-panels{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
 .sk-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;height:260px;}
 @media(max-width:900px){.sk-side{display:none;}.sk-panels{grid-template-columns:1fr;}.sk-content{padding:14px;}.sk-top{padding:12px 14px;}}
+
+/* ===== Logo link, track button, live order tracking ===== */
+html{-webkit-text-size-adjust:100%;}
+body{overflow-x:hidden;}
+.store-topbar{justify-content:space-between;}
+.store-brand-link{display:flex;align-items:center;gap:10px;color:inherit;min-width:0;}
+.store-brand-link .logo-icon{overflow:hidden;flex-shrink:0;}
+.store-brand-link .logo-icon img{width:100%;height:100%;object-fit:cover;}
+.store-brand-link .brand-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.track-nav-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:700;color:var(--primary-dark);background:var(--white);white-space:nowrap;flex-shrink:0;}
+.track-nav-btn:hover{background:var(--light-blue);}
+.track-form{display:flex;gap:8px;margin:14px 0 20px;}
+.track-form input{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--white);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.track-form input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);outline:none;}
+.track-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:22px;}
+.track-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.track-id{font-size:12px;color:var(--text-secondary);font-weight:600;}
+.track-id b{display:block;font-size:17px;color:var(--text);letter-spacing:.03em;margin-top:2px;}
+.live-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#15803D;background:var(--success-bg);padding:5px 11px;border-radius:999px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:livePulse 1.6s ease-out infinite;}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5);}100%{box-shadow:0 0 0 8px rgba(22,163,74,0);}}
+@media(prefers-reduced-motion:reduce){.live-dot{animation:none;}}
+.track-steps{list-style:none;margin:6px 0 18px;}
+.track-step{display:flex;gap:14px;position:relative;padding-bottom:22px;}
+.track-step:last-child{padding-bottom:0;}
+.track-step::before{content:"";position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--border);}
+.track-step:last-child::before{display:none;}
+.track-step.done::before{background:var(--success);}
+.ts-dot{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--border);color:#94A3B8;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;z-index:1;}
+.track-step.done .ts-dot{background:var(--success);border-color:var(--success);color:#fff;}
+.track-step.current .ts-dot{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 5px rgba(37,99,235,.15);}
+.ts-title{font-weight:700;font-size:14px;margin-top:6px;}
+.ts-text{font-size:12.5px;color:var(--text-secondary);margin-top:2px;}
+.track-step:not(.done):not(.current) .ts-title{color:#94A3B8;}
+.track-cancel{display:flex;gap:10px;align-items:center;background:var(--danger-bg);color:var(--danger);font-weight:700;padding:14px;border-radius:var(--radius-md);margin-bottom:18px;}
+.track-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.track-info div{background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;min-width:0;}
+.track-info .l{font-size:11px;color:var(--text-secondary);font-weight:700;}
+.track-info .v{font-size:13px;font-weight:700;overflow-wrap:anywhere;}
+.track-info .wide{grid-column:1/-1;}
+.track-note{font-size:12px;color:var(--text-secondary);margin-top:12px;}
+.track-empty{text-align:center;background:var(--white);border:1px dashed var(--border);border-radius:var(--radius-lg);padding:30px 18px;color:var(--text-secondary);}
+.track-empty i{font-size:28px;color:#CBD5E1;margin-bottom:10px;display:block;}
+@media(max-width:560px){
+  .store-topbar{gap:8px;}
+  .track-nav-btn span{display:none;}
+  .track-nav-btn{padding:9px 12px;}
+  .track-card{padding:16px;}
+  .track-form{flex-direction:column;}
+  .track-info{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -893,16 +944,20 @@ img{max-width:100%;}
 <script>
 (function(){
   var isProduct = /[?&]product=/.test(location.search);
-  document.getElementById('sk-product').style.display = isProduct ? '' : 'none';
-  document.getElementById('sk-home').style.display = isProduct ? 'none' : '';
+  var isTrack = /[?&]track(=|&|$)/.test(location.search);
+  document.getElementById('sk-product').style.display = (isProduct && !isTrack) ? '' : 'none';
+  document.getElementById('sk-home').style.display = (isProduct || isTrack) ? 'none' : '';
 })();
 </script>
 
 <!-- ============================== PUBLIC STOREFRONT ============================== -->
 <div id="storefront-screen">
   <div class="store-topbar">
-    <div class="logo-icon"><img src="logo.png" alt="velora"></div>
-    <div class="brand-text" id="store-brand-name">Velora</div>
+    <a href="index.html" id="store-logo-link" class="store-brand-link" aria-label="Go to home page">
+      <div class="logo-icon"><img src="logo.png" alt="velora"></div>
+      <div class="brand-text" id="store-brand-name">Velora</div>
+    </a>
+    <a href="?track" id="store-track-link" class="track-nav-btn"><i class="fa-solid fa-location-dot"></i><span>Track order</span></a>
   </div>
 
   <!-- Store home (product list) -->
@@ -1053,6 +1108,17 @@ img{max-width:100%;}
     </div>
   </div>
 
+  <!-- Live order tracking -->
+  <div class="storefront-wrap" id="store-track-view" style="display:none;">
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;">Track your order</h2>
+    <p style="font-size:13px;color:var(--text-secondary);">Enter the Tracking ID from your order message.</p>
+    <form class="track-form" id="track-form" autocomplete="off">
+      <input type="text" id="track-input" placeholder="TRK-XXXXXX" autocapitalize="characters" spellcheck="false" aria-label="Tracking ID">
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Track</button>
+    </form>
+    <div id="track-result"></div>
+  </div>
+
   <footer class="store-footer">
     <span id="store-footer-brand">Velora</span> &copy; <span id="store-footer-year"></span>
   </footer>
@@ -1080,7 +1146,8 @@ img{max-width:100%;}
         <div class="detail-item" style="text-align:left;"><div class="l">Order ID</div><div class="v" id="success-order-id-text" style="font-size:12.5px;"></div></div>
         <div class="detail-item" style="text-align:left;"><div class="l">Amount</div><div class="v" id="success-amount-text" style="font-size:12.5px;"></div></div>
       </div>
-      <p style="font-size:11.5px;color:var(--text-secondary);margin-top:14px;">Save this Tracking ID to check your order status with us.</p>
+      <a class="btn btn-secondary btn-block" id="success-track-link" href="?track" style="margin-top:14px;"><i class="fa-solid fa-location-dot"></i> Track this order</a>
+      <p style="font-size:11.5px;color:var(--text-secondary);margin-top:12px;">Save this Tracking ID to check your order status with us.</p>
     </div>
     <div class="modal-footer" style="justify-content:center;">
       <button class="btn btn-primary btn-block" id="success-close-btn">Continue Shopping</button>
@@ -1438,6 +1505,93 @@ function generateTrackingId(){
   return 'TRK-' + code;
 }
 
+/* ==========================================================================
+   LIVE ORDER TRACKING  (?track=TRK-XXXXXX) — updates the moment admin changes status
+   ========================================================================== */
+const TrackOrder = (function(){
+  const STEPS = [
+    { key:'pending',    icon:'fa-receipt',      title:'Order placed',    text:'We have received your order.' },
+    { key:'confirmed',  icon:'fa-circle-check', title:'Order confirmed', text:'Your order is confirmed and is being prepared.' },
+    { key:'processing', icon:'fa-truck-fast',   title:'On the way',      text:'Your order is packed and on its way to you.' },
+    { key:'delivered',  icon:'fa-house-circle-check', title:'Delivered', text:'Your order has been delivered. Thank you!' }
+  ];
+  let ref = null, handler = null, lastStatus = null;
+
+  function normalize(v){
+    v = (v || '').trim().toUpperCase().replace(/\s+/g, '');
+    if(/^[A-Z0-9]{6}$/.test(v)) v = 'TRK-' + v;
+    return v;
+  }
+  function stop(){
+    if(ref && handler) ref.off('value', handler);
+    ref = null; handler = null;
+  }
+  function box(){ return document.getElementById('track-result'); }
+  function message(icon, text){
+    box().innerHTML = '<div class="track-empty"><i class="fa-solid ' + icon + '"></i>' + escapeHtml(text) + '</div>';
+  }
+  function render(o){
+    if(!o){ message('fa-circle-question', 'No order found with this Tracking ID. Please check it and try again.'); return; }
+    const status = o.status || 'pending';
+    const idx = STEPS.findIndex(s => s.key === status);
+    const cancelled = status === 'cancelled';
+    const steps = cancelled ? '' : '<ol class="track-steps">' + STEPS.map((s, i) => {
+      const cls = i < idx ? 'done' : (i === idx ? 'current' : '');
+      return '<li class="track-step ' + cls + '"><div class="ts-dot"><i class="fa-solid ' + (i < idx ? 'fa-check' : s.icon) + '"></i></div>' +
+             '<div><div class="ts-title">' + s.title + '</div>' + (i <= idx ? '<div class="ts-text">' + s.text + '</div>' : '') + '</div></li>';
+    }).join('') + '</ol>';
+    const due = Number(o.dueAmount) > 0 ? '<div><div class="l">Pay on delivery</div><div class="v">' + fmtMoney(o.dueAmount) + '</div></div>' : '';
+    const place = [o.thana, o.district].filter(Boolean).join(', ');
+    box().innerHTML =
+      '<div class="track-card">' +
+        '<div class="track-head"><div class="track-id">Tracking ID<b>' + escapeHtml(o.trackingId) + '</b></div>' +
+        '<span class="live-pill"><span class="live-dot"></span>Live · ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + '</span></div>' +
+        (cancelled ? '<div class="track-cancel"><i class="fa-solid fa-circle-xmark"></i> This order has been cancelled.</div>' : steps) +
+        '<div class="track-info">' +
+          '<div class="wide"><div class="l">Product</div><div class="v">' + escapeHtml(o.product) + '</div></div>' +
+          '<div><div class="l">Quantity</div><div class="v">' + escapeHtml(String(o.quantity || 1)) + '</div></div>' +
+          '<div><div class="l">Total</div><div class="v">' + fmtMoney(o.total) + '</div></div>' +
+          '<div><div class="l">Order date</div><div class="v">' + fmtDate(o.date) + '</div></div>' +
+          '<div><div class="l">Order ID</div><div class="v">' + escapeHtml(o.id) + '</div></div>' + due +
+          (place ? '<div class="wide"><div class="l">Delivery to</div><div class="v">' + escapeHtml(place) + '</div></div>' : '') +
+        '</div>' +
+        '<p class="track-note">This page updates by itself. You do not need to refresh.</p>' +
+      '</div>';
+    if(lastStatus && lastStatus !== status){
+      showToast('Your order is now ' + status.charAt(0).toUpperCase() + status.slice(1), 'success');
+    }
+    lastStatus = status;
+  }
+  function start(id){
+    stop(); lastStatus = null;
+    message('fa-spinner fa-spin', 'Looking for your order...');
+    ref = FirebaseDB.ref('orders').orderByChild('trackingId').equalTo(id);
+    handler = function(snap){
+      let found = null;
+      snap.forEach(function(ch){ found = ch.val(); });
+      render(found);
+    };
+    ref.on('value', handler, function(err){
+      console.warn('Tracking read failed:', err.message);
+      message('fa-triangle-exclamation', 'Could not load your order right now. Please try again in a moment.');
+    });
+  }
+  function open(raw){
+    const input = document.getElementById('track-input');
+    const id = normalize(raw);
+    input.value = id;
+    if(id) start(id); else box().innerHTML = '';
+  }
+  document.getElementById('track-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const id = normalize(document.getElementById('track-input').value);
+    if(!id){ showToast('Please enter your Tracking ID', 'warning'); return; }
+    history.replaceState(null, '', '?track=' + encodeURIComponent(id));
+    open(id);
+  });
+  return { open };
+})();
+
 const StoreFront = (function(){
   let currentProduct = null;
   let qty = 1;
@@ -1631,7 +1785,17 @@ const StoreFront = (function(){
   }
 
   function renderStorePage(){
-    const id = getParams().get('product');
+    const params = getParams();
+    if(params.has('track')){
+      document.getElementById('store-home-view').style.display = 'none';
+      document.getElementById('store-product-view').style.display = 'none';
+      document.getElementById('store-checkout-view').style.display = 'none';
+      document.getElementById('store-track-view').style.display = 'block';
+      document.getElementById('store-brand-name').textContent = brandName(SettingsService.getSettings());
+      TrackOrder.open(params.get('track'));
+      return;
+    }
+    const id = params.get('product');
     if(id){
       document.getElementById('store-home-view').style.display = 'none';
       document.getElementById('store-product-view').style.display = 'block';
@@ -2057,6 +2221,7 @@ const StoreFront = (function(){
         btn.innerHTML = original;
         btn.disabled = false;
         document.getElementById('success-tracking-id').textContent = trackingId;
+        document.getElementById('success-track-link').href = location.pathname + '?track=' + encodeURIComponent(trackingId);
         document.getElementById('success-order-id-text').textContent = order.id;
         document.getElementById('success-amount-text').textContent = fmtMoney(order.total);
         openModal('order-success-modal-overlay');

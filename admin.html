@@ -838,6 +838,31 @@ img{max-width:100%;}
 .sk-panels{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
 .sk-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;height:260px;}
 @media(max-width:900px){.sk-side{display:none;}.sk-panels{grid-template-columns:1fr;}.sk-content{padding:14px;}.sk-top{padding:12px 14px;}}
+
+/* ===== Mobile: tables become cards ===== */
+.sidebar-brand{cursor:pointer;}
+#order-status-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+.status-tab{flex-shrink:0;}
+.msg-lang{display:inline-flex;gap:6px;background:var(--bg);padding:4px;border-radius:var(--radius-sm);margin-bottom:12px;}
+#customer-msg-text{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);line-height:1.6;resize:vertical;min-height:260px;font-size:13.5px;}
+#customer-msg-text:focus{border-color:var(--primary);background:var(--white);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.msg-hint{font-size:12px;color:var(--text-secondary);margin-top:8px;}
+.icon-action.msg{color:#15803D;}
+@media(max-width:640px){
+  .table-wrap{overflow:visible;}
+  table{min-width:0 !important;}
+  table,tbody,tr,td{display:block;width:100%;}
+  thead{display:none;}
+  tbody tr{width:auto;background:var(--white);border:1px solid var(--border);border-radius:12px;margin:10px 12px;padding:4px 12px;}
+  tbody tr:hover{background:var(--white);}
+  tbody td{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;border-bottom:1px dashed var(--border);text-align:right;min-width:0;overflow-wrap:anywhere;}
+  tbody td:last-child{border-bottom:none;}
+  tbody td::before{content:attr(data-label);font-size:11.5px;font-weight:700;color:var(--text-secondary);text-align:left;flex-shrink:0;}
+  tbody td[data-label="Actions"]{justify-content:flex-end;}
+  tbody td[data-label="Actions"]::before{display:none;}
+  .card-header .btn,.card-header .select-input{max-width:100%;}
+  .modal-footer{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
@@ -1435,6 +1460,28 @@ img{max-width:100%;}
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close="confirm-modal-overlay">Cancel</button>
       <button class="btn btn-danger" id="confirm-modal-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer message (shown after an order is Confirmed) -->
+<div class="modal-overlay" id="customer-msg-modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Message for customer</h3>
+      <button class="modal-close" data-close="customer-msg-modal-overlay"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="msg-lang">
+        <button type="button" class="chart-tab active" data-lang="bn">বাংলা</button>
+        <button type="button" class="chart-tab" data-lang="en">English</button>
+      </div>
+      <textarea id="customer-msg-text" rows="14"></textarea>
+      <p class="msg-hint">You can edit this text. Copy it and send it by WhatsApp, SMS or Messenger.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="copy-track-link-btn"><i class="fa-solid fa-link"></i> Copy link only</button>
+      <button class="btn btn-primary" id="copy-customer-msg-btn"><i class="fa-regular fa-copy"></i> Copy message</button>
     </div>
   </div>
 </div>
@@ -2592,6 +2639,7 @@ function renderOrders(){
         <div class="row-actions">
           <button class="icon-action view" data-action="view" data-id="${o.id}" title="View Details"><i class="fa-solid fa-eye"></i></button>
           <button class="icon-action edit" data-action="status" data-id="${o.id}" title="Update Status"><i class="fa-solid fa-pen"></i></button>
+          ${['confirmed','processing','delivered'].includes(o.status) ? `<button class="icon-action msg" data-action="message" data-id="${o.id}" title="Customer message"><i class="fa-solid fa-message"></i></button>` : ''}
         </div>
       </td>
     </tr>
@@ -2601,6 +2649,7 @@ function renderOrders(){
     btn.addEventListener('click', ()=>{
       const order = orders.find(o=>o.id===btn.dataset.id);
       if(btn.dataset.action === 'view'){ viewOrderDetail(order); }
+      else if(btn.dataset.action === 'message'){ showCustomerMessage(order); }
       else {
         document.getElementById('order-status-edit-id').value = order.id;
         document.getElementById('order-status-select').value = order.status;
@@ -2656,11 +2705,95 @@ document.getElementById('order-date-filter').addEventListener('change', e=>{ ord
 document.getElementById('save-order-status-btn').addEventListener('click', ()=>{
   const id = document.getElementById('order-status-edit-id').value;
   const status = document.getElementById('order-status-select').value;
+  const before = OrderService.getOrders().find(o=>o.id===id);
+  const wasConfirmed = before && before.status === 'confirmed';
   OrderService.updateStatus(id, status);
   showToast('Order status updated','success');
   closeModal('order-status-modal-overlay');
   renderOrders();
   if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+  if(status === 'confirmed' && !wasConfirmed){
+    const updated = OrderService.getOrders().find(o=>o.id===id);
+    if(updated) setTimeout(()=> showCustomerMessage(updated), 250);
+  }
+});
+
+/* ==========================================================================
+   CUSTOMER MESSAGE (copyable, contains the live tracking link)
+   ========================================================================== */
+let msgOrder = null, msgLang = 'bn';
+
+function trackingLink(o){
+  if(!o || !o.trackingId) return '';
+  const base = location.href.split('#')[0].split('?')[0].replace(/[^\/]*$/, '');
+  return base + 'index.html?track=' + encodeURIComponent(o.trackingId);
+}
+
+function buildCustomerMessage(o, lang){
+  const brand = brandName(SettingsService.getSettings());
+  const link = trackingLink(o);
+  const addr = o.deliveryAddress || [o.thana, o.district].filter(Boolean).join(', ');
+  const due = Number(o.dueAmount) > 0 ? Number(o.dueAmount) : 0;
+  const L = [];
+  if(lang === 'en'){
+    L.push('Hello ' + o.customer + ',', '', 'Your order has been confirmed ✅', '');
+    L.push('Order ID: ' + o.id, 'Product: ' + o.product, 'Quantity: ' + o.quantity, 'Total: ' + fmtMoney(o.total));
+    if(due) L.push('Pay on delivery: ' + fmtMoney(due));
+    if(addr) L.push('Delivery address: ' + addr);
+    if(link) L.push('', 'Track your order live here:', link, 'Tracking ID: ' + o.trackingId);
+    L.push('', 'Thank you for shopping with us.', brand);
+  } else {
+    L.push('আসসালামু আলাইকুম ' + o.customer + ',', '', 'আপনার অর্ডারটি কনফার্ম হয়েছে ✅', '');
+    L.push('অর্ডার আইডি: ' + o.id, 'প্রোডাক্ট: ' + o.product, 'পরিমাণ: ' + o.quantity, 'মোট: ' + fmtMoney(o.total));
+    if(due) L.push('ডেলিভারির সময় দিতে হবে: ' + fmtMoney(due));
+    if(addr) L.push('ডেলিভারি ঠিকানা: ' + addr);
+    if(link) L.push('', 'আপনার অর্ডারের লাইভ ট্র্যাকিং লিংক:', link, 'ট্র্যাকিং আইডি: ' + o.trackingId);
+    L.push('', 'আমাদের সাথে কেনাকাটা করার জন্য ধন্যবাদ।', brand);
+  }
+  return L.join('\n');
+}
+
+function showCustomerMessage(o){
+  msgOrder = o;
+  setMsgLang(msgLang);
+  openModal('customer-msg-modal-overlay');
+}
+function setMsgLang(lang){
+  msgLang = lang;
+  document.querySelectorAll('#customer-msg-modal-overlay .msg-lang button').forEach(b=> b.classList.toggle('active', b.dataset.lang === lang));
+  document.getElementById('customer-msg-text').value = buildCustomerMessage(msgOrder, lang);
+}
+function copyText(text){
+  const fallback = ()=>{
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e){}
+    ta.remove();
+    return ok ? Promise.resolve() : Promise.reject();
+  };
+  if(navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).catch(fallback);
+  return fallback();
+}
+document.querySelectorAll('#customer-msg-modal-overlay .msg-lang button').forEach(b=>{
+  b.addEventListener('click', ()=> setMsgLang(b.dataset.lang));
+});
+document.getElementById('copy-customer-msg-btn').addEventListener('click', ()=>{
+  copyText(document.getElementById('customer-msg-text').value)
+    .then(()=> showToast('Message copied','success'))
+    .catch(()=> showToast('Could not copy. Select the text and copy it manually.','error'));
+});
+document.getElementById('copy-track-link-btn').addEventListener('click', ()=>{
+  const link = trackingLink(msgOrder);
+  if(!link){ showToast('This order has no Tracking ID','warning'); return; }
+  copyText(link).then(()=> showToast('Tracking link copied','success')).catch(()=> showToast('Could not copy the link','error'));
+});
+
+/* Logo / brand -> Dashboard */
+document.querySelector('.sidebar-brand').addEventListener('click', (e)=>{
+  if(e.target.closest('#sidebar-close')) return;
+  goToPage('dashboard');
 });
 
 /* ==========================================================================
@@ -3088,6 +3221,25 @@ async function bootAdmin(){
   try{ localStorage.removeItem('velora_admin_hint'); }catch(e){}
   hideSkeleton();
   document.getElementById('login-screen').style.display = 'flex';
+})();
+</script>
+<script>
+(function(){
+  function label(tbody){
+    var table = tbody.closest('table'); if(!table) return;
+    var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function(th){ return th.textContent.trim(); });
+    tbody.querySelectorAll('tr').forEach(function(tr){
+      Array.prototype.forEach.call(tr.children, function(td, i){
+        if(heads[i] && td.getAttribute('data-label') !== heads[i]) td.setAttribute('data-label', heads[i]);
+      });
+    });
+  }
+  var obs = new MutationObserver(function(muts){
+    var set = new Set();
+    muts.forEach(function(m){ if(m.target.nodeType === 1) set.add(m.target); });
+    set.forEach(label);
+  });
+  document.querySelectorAll('tbody').forEach(function(tb){ label(tb); obs.observe(tb, {childList:true}); });
 })();
 </script>
 </body>
