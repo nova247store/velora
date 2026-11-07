@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,14 +7,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Velora</title>
 <link rel="icon" type="image/x-icon" href="logo.png">
+<link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js">
+<link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js">
+<link rel="preload" as="image" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://shopnest-cf2fe-default-rtdb.firebaseio.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 <style>
 /* ==========================================================================
    ROOT / TOKENS
@@ -596,7 +599,36 @@ tbody tr:hover{background:#FAFBFF;}
 .pd-price{font-size:26px;font-weight:800;color:var(--primary-dark);}
 .pd-price-old{font-size:15px;color:var(--text-secondary);text-decoration:line-through;}
 .pd-discount-tag{background:var(--success-bg);color:#15803D;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;}
-.pd-desc{font-size:13.5px;color:var(--text-secondary);line-height:1.65;margin-bottom:18px;}
+.pd-desc-wrap{margin-bottom:18px;}
+.pd-desc{font-size:13.5px;color:var(--text-secondary);line-height:1.65;margin-bottom:0;}
+.pd-desc p{margin:0 0 .6em;}
+.pd-desc ul,.pd-desc ol{margin:0 0 .6em;padding-left:1.3em;}
+.pd-desc ul{list-style:disc;}
+.pd-desc ol{list-style:decimal;}
+.pd-desc li{margin:.15em 0;}
+.pd-desc strong{color:var(--text);font-weight:700;}
+.pd-desc .pd-h{display:block;color:var(--text);font-weight:700;font-size:1.05em;margin:0 0 .3em;}
+.pd-desc > :last-child{margin-bottom:0;}
+.pd-desc.collapsed{max-height:6.6em;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 1.8em),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 1.8em),transparent);}
+.pd-desc-toggle{background:none;border:0;padding:6px 0 0;margin:0;font:inherit;font-size:13px;font-weight:700;color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+.pd-desc-toggle:hover{text-decoration:underline;}
+/* ===== Searchable select (combobox) for District / Upazila ===== */
+.combo{position:relative;scroll-margin-top:84px;}
+.field .combo .combo-input{width:100%;padding:10px 38px 10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font:inherit;color:var(--text);cursor:pointer;text-overflow:ellipsis;outline:none;transition:border-color .15s, box-shadow .15s;}
+.field .combo .combo-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);background:var(--white);}
+.combo.disabled .combo-input{opacity:.6;cursor:not-allowed;}
+.combo-ph{position:absolute;left:14px;right:38px;top:50%;transform:translateY(-50%);color:var(--text-secondary);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.combo.disabled .combo-ph{opacity:.7;}
+.combo-chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:11px;pointer-events:none;transition:transform .15s;}
+.combo.open .combo-chev{transform:translateY(-50%) rotate(180deg);}
+.combo-list{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-md);z-index:90;max-height:240px;overflow-y:auto;padding:6px;margin:0;list-style:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.combo.open .combo-list{display:block;}
+.combo-opt{padding:10px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--text);overflow-wrap:anywhere;}
+.combo-opt.active{background:var(--bg);}
+.combo-opt.selected{color:var(--primary);font-weight:700;}
+.combo-empty{padding:12px 10px;font-size:13px;color:var(--text-secondary);}
+@media(max-width:520px){.field .combo .combo-input{font-size:16px;}}
+
 .pd-meta-row{display:flex;gap:18px;margin-bottom:22px;flex-wrap:wrap;}
 .pd-meta-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary);}
 .pd-meta-item i{color:var(--primary);}
@@ -906,6 +938,40 @@ body{overflow-x:hidden;}
   .track-form{flex-direction:column;}
   .track-info{grid-template-columns:1fr;}
 }
+
+/* ==========================================================================
+   RESPONSIVE FIXES v2  (grid/flex children could not shrink, so wide content
+   stretched the page sideways on phones)
+   ========================================================================== */
+html,body{max-width:100%;overflow-x:hidden;}
+#storefront-screen,.storefront-wrap{min-width:0;max-width:100%;}
+.product-hero>*,.checkout-grid>*,.form-grid>*,.bkash-amount-box>*,.track-info>*,.summary-product>*{min-width:0;}
+.product-hero,.checkout-grid,.checkout-card,.summary-card,.track-card{max-width:100%;}
+.pd-title,.pd-desc,.cell-main,.cell-sub,.track-info .v,.summary-product{overflow-wrap:anywhere;}
+.field input,.field select,.field textarea{max-width:100%;min-width:0;}
+.store-topbar{position:sticky;top:0;z-index:50;}
+
+@media(max-width:760px){
+  .product-hero,.checkout-grid{grid-template-columns:minmax(0,1fr);}
+  .store-home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .store-home-card .h-body{padding:10px 10px 12px;}
+  .store-home-card .h-name{font-size:13px;}
+  .pd-desc{font-size:14px;}
+  .design-grid,.size-row{gap:8px;}
+  .qty-row{flex-wrap:wrap;}
+  .summary-row{font-size:13.5px;}
+  .store-footer{padding:16px 14px calc(28px + env(safe-area-inset-bottom));}
+  .success-box{margin:30px 12px;padding:32px 20px;}
+}
+@media(max-width:380px){
+  .store-home-grid{gap:8px;}
+  .pd-title{font-size:18px;}
+  .design-thumb{width:56px;height:56px;}
+}
+.top-actions{display:flex;align-items:center;gap:8px;}
+#lang-toggle{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--white);color:var(--text);font-size:13px;font-weight:600;}
+#lang-toggle:hover{background:var(--bg);}
+body{font-family:'Inter','Hind Siliguri','Noto Sans Bengali',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
 </style>
 </head>
 <body>
@@ -985,7 +1051,10 @@ body{overflow-x:hidden;}
           <span class="pd-price-old" id="store-product-old-price" style="display:none;"></span>
           <span class="pd-discount-tag" id="store-product-discount-tag" style="display:none;"></span>
         </div>
-        <p class="pd-desc" id="store-product-desc"></p>
+        <div class="pd-desc-wrap">
+          <div class="pd-desc" id="store-product-desc"></div>
+          <button type="button" class="pd-desc-toggle" id="store-desc-toggle" style="display:none;">See more</button>
+        </div>
         <div class="pd-meta-row">
           <div class="pd-meta-item"><i class="fa-solid fa-truck"></i> Fast delivery</div>
           <div class="pd-meta-item"><i class="fa-solid fa-shield-halved"></i> Secure checkout</div>
@@ -1194,18 +1263,36 @@ const DataService = {
      those have arrived. Any other key keeps loading in the background and calls
      onRemoteUpdate() when its first data lands, so the page never waits for
      collections it doesn't need yet. */
+  /* Fast load: the public storefront data (settings, products) is cached in the
+     browser. On a repeat visit the page paints instantly from that cache, then
+     the live Firebase value replaces it (and re-renders only if it changed). */
+  CACHEABLE: { settings:1, products:1 },
+  readCache(key){
+    try{ const r = localStorage.getItem('velora_c_' + key); return r ? JSON.parse(r) : undefined; }catch(e){ return undefined; }
+  },
+  writeCache(key, val){
+    try{ localStorage.setItem('velora_c_' + key, JSON.stringify(val === undefined ? null : val)); }catch(e){}
+  },
   loadKeys(keys, waitKeys){
     const wait = new Set(waitKeys || keys);
     const tasks = keys.map((key)=>{
       if(!DataService.subs[key]){
         DataService.subs[key] = new Promise((resolve)=>{
-          let first = true;
+          let first = true, early = false;
+          if(DataService.CACHEABLE[key]){
+            const c = DataService.readCache(key);
+            if(c !== undefined && c !== null){ DataService.cache[key] = c; early = true; resolve(); }
+          }
           FirebaseDB.ref(key).on('value', (snapshot)=>{
-            DataService.cache[key] = snapshot.val();
+            const val = snapshot.val();
+            const changed = early && JSON.stringify(val) !== JSON.stringify(DataService.cache[key]);
+            DataService.cache[key] = val;
+            if(DataService.CACHEABLE[key]) DataService.writeCache(key, val);
             const wasFirst = first;
             first = false;
             if(wasFirst) resolve();
-            if((!wasFirst || DataService.ready) && typeof DataService.onRemoteUpdate === 'function'){
+            const notify = (!wasFirst || DataService.ready) && !(wasFirst && early && !changed);
+            if(notify && typeof DataService.onRemoteUpdate === 'function'){
               DataService.onRemoteUpdate(key);
             }
           }, (err)=>{
@@ -1423,74 +1510,886 @@ function escapeHtml(str){
 }
 
 /* ==========================================================================
+   PRODUCT DESCRIPTION: formatting + "See more / See less"
+   Supported in the description text (written in the admin panel):
+   - blank line = new paragraph, normal line break = line break
+   - lines starting with - * • ✔ = bullet list;  1. 2. 3. = numbered list
+   - **bold text**   and   # Heading
+   ========================================================================== */
+function formatDescription(text){
+  const inline = (line)=> escapeHtml(line).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  const lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+  let html = '', para = [], list = null; /* list = {tag, items[]} */
+  const flushPara = ()=>{ if(para.length){ html += '<p>' + para.join('<br>') + '</p>'; para = []; } };
+  const flushList = ()=>{ if(list){ html += '<' + list.tag + '>' + list.items.map(i=>'<li>'+i+'</li>').join('') + '</' + list.tag + '>'; list = null; } };
+  lines.forEach(raw=>{
+    const line = raw.trim();
+    if(!line){ flushPara(); flushList(); return; }
+    let m;
+    if((m = line.match(/^[-*•▪●✔✓➤]\s+(.+)$/))){
+      flushPara(); if(!list || list.tag !== 'ul'){ flushList(); list = { tag:'ul', items:[] }; }
+      list.items.push(inline(m[1])); return;
+    }
+    if((m = line.match(/^\d+[.)]\s+(.+)$/))){
+      flushPara(); if(!list || list.tag !== 'ol'){ flushList(); list = { tag:'ol', items:[] }; }
+      list.items.push(inline(m[1])); return;
+    }
+    if((m = line.match(/^#{1,3}\s+(.+)$/))){
+      flushPara(); flushList(); html += '<strong class="pd-h">' + inline(m[1]) + '</strong>'; return;
+    }
+    flushList(); para.push(inline(line));
+  });
+  flushPara(); flushList();
+  return html;
+}
+
+/* ==========================================================================
+   SEARCHABLE SELECT (combobox): click to see all options, type to filter.
+   The original <select> stays in the page (hidden) and keeps the real value,
+   so the rest of the code (reading .value, 'change' listeners) is unchanged.
+   ========================================================================== */
+function initCombo(selectId, cfg){
+  const sel = document.getElementById(selectId);
+  if(!sel || sel.dataset.combo) return;
+  sel.dataset.combo = '1';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'combo';
+  wrap.innerHTML =
+    '<input type="text" class="combo-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false">' +
+    '<span class="combo-ph" aria-hidden="true"></span>' +
+    '<i class="fa-solid fa-chevron-down combo-chev" aria-hidden="true"></i>' +
+    '<ul class="combo-list" role="listbox"></ul>';
+  sel.style.display = 'none';
+  sel.tabIndex = -1;
+  sel.insertAdjacentElement('afterend', wrap);
+
+  const input = wrap.querySelector('.combo-input');
+  const ph = wrap.querySelector('.combo-ph');
+  const list = wrap.querySelector('.combo-list');
+  input.id = selectId + '-combo';
+  list.id = selectId + '-list';
+  input.setAttribute('aria-controls', list.id);
+  input.setAttribute('aria-label', cfg.label);
+  const lbl = sel.closest('.field') && sel.closest('.field').querySelector('label');
+  if(lbl) lbl.htmlFor = input.id;
+
+  let shown = [], active = -1, typed = false, isOpen = false;
+  const isBn = ()=> document.documentElement.lang === 'bn';
+  const labelOf = (v)=> (isBn() && typeof BD_PLACE_BN !== 'undefined' && BD_PLACE_BN[v]) || v;
+  const norm = (str)=> String(str).toLowerCase().replace(/[^a-z0-9\u0980-\u09FF]/g, '');
+  const values = ()=> Array.from(sel.options).filter(o=> o.value !== '').map(o=> o.value);
+
+  function syncDisplay(){
+    input.value = sel.value ? labelOf(sel.value) : '';
+    input.disabled = sel.disabled;
+    wrap.classList.toggle('disabled', sel.disabled);
+    const t = sel.disabled ? cfg.disabledPlaceholder : cfg.placeholder;   /* English: the page translator localises it */
+    if(ph.textContent !== t) ph.textContent = t;
+    ph.style.display = input.value ? 'none' : '';
+  }
+
+  function setActive(i){
+    const items = list.querySelectorAll('.combo-opt');
+    if(!items.length){ active = -1; input.removeAttribute('aria-activedescendant'); return; }
+    active = Math.max(0, Math.min(i, items.length - 1));
+    items.forEach((el, k)=> el.classList.toggle('active', k === active));
+    const el = items[active];
+    input.setAttribute('aria-activedescendant', el.id);
+    const top = el.offsetTop, bottom = top + el.offsetHeight;
+    if(top < list.scrollTop) list.scrollTop = Math.max(0, top - 6);
+    else if(bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight + 6;
+  }
+
+  function render(){
+    const q = typed ? norm(input.value) : '';
+    const all = values();
+    if(q){
+      const starts = (v)=> (norm(v).startsWith(q) || norm(labelOf(v)).startsWith(q)) ? 0 : 1;
+      shown = all.filter(v=> norm(v).includes(q) || norm(labelOf(v)).includes(q)).sort((a, b)=> starts(a) - starts(b));
+    } else {
+      shown = all;
+    }
+    list.innerHTML = shown.length
+      ? shown.map((v, i)=> '<li class="combo-opt' + (v === sel.value ? ' selected' : '') + '" role="option" id="' + list.id + '-' + i + '" data-i="' + i + '" aria-selected="' + (v === sel.value) + '">' + escapeHtml(labelOf(v)) + '</li>').join('')
+      : '<li class="combo-empty" role="presentation">No results found</li>';
+    const selIdx = typed ? 0 : shown.indexOf(sel.value);
+    setActive(selIdx >= 0 ? selIdx : 0);
+    if(!typed && selIdx >= 0){
+      const el = list.querySelectorAll('.combo-opt')[selIdx];
+      if(el) list.scrollTop = Math.max(0, el.offsetTop - list.clientHeight / 2 + el.offsetHeight / 2);
+    }
+  }
+
+  function open(){
+    if(isOpen || sel.disabled) return;
+    isOpen = true; typed = false;
+    wrap.classList.add('open');
+    input.setAttribute('aria-expanded', 'true');
+    render();
+    try{ input.select(); }catch(e){}
+    if(window.innerWidth <= 768){
+      setTimeout(()=>{ if(isOpen) wrap.scrollIntoView({ block:'start', behavior:'smooth' }); }, 300);
+    }
+  }
+  function close(){
+    isOpen = false; typed = false;
+    wrap.classList.remove('open');
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+    syncDisplay();
+  }
+  function choose(v){
+    if(v == null) return;
+    sel.value = v;
+    sel.dispatchEvent(new Event('change', { bubbles:true }));
+    close();
+    input.blur();
+  }
+
+  input.addEventListener('focus', open);
+  input.addEventListener('click', open);
+  input.addEventListener('blur', close);
+  input.addEventListener('input', ()=>{
+    typed = true;
+    if(!isOpen){ isOpen = true; wrap.classList.add('open'); input.setAttribute('aria-expanded', 'true'); }
+    ph.style.display = input.value ? 'none' : '';
+    render();
+  });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowDown'){ e.preventDefault(); if(!isOpen) open(); else setActive(active + 1); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); if(!isOpen) open(); else setActive(active - 1); }
+    else if(e.key === 'Enter'){ e.preventDefault(); if(isOpen && active >= 0 && shown[active] != null) choose(shown[active]); }
+    else if(e.key === 'Escape'){ if(isOpen){ e.preventDefault(); close(); } }
+    else if(e.key === 'Tab'){ close(); }
+  });
+  list.addEventListener('mousedown', (e)=> e.preventDefault());   /* keep focus in the input while tapping an option */
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('.combo-opt');
+    if(li) choose(shown[parseInt(li.dataset.i, 10)]);
+  });
+
+  /* stay in sync when the code repopulates / disables the <select>, resets the form, or the language changes */
+  new MutationObserver(()=>{ if(sel.disabled && isOpen) close(); syncDisplay(); if(isOpen) render(); })
+    .observe(sel, { childList:true, attributes:true, attributeFilter:['disabled'] });
+  new MutationObserver(()=>{ syncDisplay(); if(isOpen) render(); })
+    .observe(document.documentElement, { attributes:true, attributeFilter:['lang'] });
+  if(sel.form) sel.form.addEventListener('reset', ()=> setTimeout(syncDisplay, 0));
+  syncDisplay();
+}
+
+let descObserver = null;
+function checkDescOverflow(){
+  const el = document.getElementById('store-product-desc');
+  const btn = document.getElementById('store-desc-toggle');
+  if(!el || !btn || !el.dataset.long || el.classList.contains('expanded')) return;
+  el.classList.add('collapsed');
+  if(el.scrollHeight > el.clientHeight + 2){
+    btn.style.display = 'inline-flex';
+  } else {                       /* short text (or page hidden): nothing to hide */
+    el.classList.remove('collapsed');
+    btn.style.display = 'none';
+  }
+}
+function renderDescription(text){
+  const el = document.getElementById('store-product-desc');
+  const btn = document.getElementById('store-desc-toggle');
+  if(!el || !btn) return;
+  el.classList.remove('collapsed','expanded');
+  btn.textContent = 'See more';
+  btn.style.display = 'none';
+  const raw = (text || '').trim();
+  if(!raw){
+    el.dataset.long = '';
+    el.textContent = 'No description available for this product.';
+    return;
+  }
+  el.innerHTML = formatDescription(raw);
+  el.dataset.long = '1';
+  btn.onclick = ()=>{
+    const open = el.classList.toggle('expanded');
+    el.classList.toggle('collapsed', !open);
+    btn.textContent = open ? 'See less' : 'See more';
+    if(!open){ el.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
+  };
+  checkDescOverflow();
+  requestAnimationFrame(checkDescOverflow);
+  if(window.ResizeObserver && !descObserver){      /* re-check when page becomes visible / resized / fonts load */
+    descObserver = new ResizeObserver(()=> requestAnimationFrame(checkDescOverflow));
+    descObserver.observe(el);
+  }
+}
+
+/* ==========================================================================
    PUBLIC STOREFRONT (customer-facing product page + checkout)
    ========================================================================== */
-const BD_DISTRICTS = ["Bagerhat","Bandarban","Barguna","Barishal","Bhola","Bogura","Brahmanbaria","Chandpur","Chapainawabganj","Chattogram","Chuadanga","Cox's Bazar","Cumilla","Dhaka","Dinajpur","Faridpur","Feni","Gaibandha","Gazipur","Gopalganj","Habiganj","Jamalpur","Jashore","Jhalokati","Jhenaidah","Joypurhat","Khagrachhari","Khulna","Kishoreganj","Kurigram","Kushtia","Lakshmipur","Lalmonirhat","Madaripur","Magura","Manikganj","Meherpur","Moulvibazar","Munshiganj","Mymensingh","Naogaon","Narail","Narayanganj","Narsingdi","Natore","Netrokona","Nilphamari","Noakhali","Pabna","Panchagarh","Patuakhali","Pirojpur","Rajbari","Rajshahi","Rangamati","Rangpur","Satkhira","Shariatpur","Sherpur","Sirajganj","Sunamganj","Sylhet","Tangail","Thakurgaon"];
+const BD_DISTRICTS = ["Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chapainawabganj", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dhaka Sub-urban", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"];
+/* Dhaka = Dhaka city areas (thanas). Dhaka Sub-urban = Savar, Ashulia, Keraniganj, Dhamrai, Dohar, Nawabganj, Tongi. Edit the lists below to add/remove areas. */
 const BD_UPAZILAS = {
   "Bagerhat": ["Bagerhat Sadar", "Chitalmari", "Fakirhat", "Kachua", "Mollahat", "Mongla", "Morrelganj", "Rampal", "Sarankhola"],
   "Bandarban": ["Alikadam", "Bandarban Sadar", "Lama", "Naikhongchhari", "Rowangchhari", "Ruma", "Thanchi"],
-  "Barguna": ["Amtali", "Bamna", "Barguna Sadar", "Betagi", "Pathorghata", "Taltali"],
-  "Barishal": ["Agailjhara", "Babuganj", "Bakerganj", "Banaripara", "Barisal Sadar", "Gournadi", "Hizla", "Mehendiganj", "Muladi", "Wazirpur"],
-  "Bhola": ["Bhola Sadar", "Borhan Sddin", "Charfesson", "Doulatkhan", "Lalmohan", "Monpura", "Tazumuddin"],
-  "Bogura": ["Adamdighi", "Bogra Sadar", "Dhunot", "Dupchanchia", "Gabtali", "Kahaloo", "Nondigram", "Shajahanpur", "Shariakandi", "Sherpur", "Shibganj", "Sonatala"],
+  "Barguna": ["Amtali", "Bamna", "Barguna Sadar", "Betagi", "Patharghata", "Taltali"],
+  "Barishal": ["Agailjhara", "Babuganj", "Bakerganj", "Banaripara", "Barishal Sadar", "Gournadi", "Hizla", "Mehendiganj", "Muladi", "Wazirpur"],
+  "Bhola": ["Bhola Sadar", "Borhanuddin", "Char Fasson", "Daulatkhan", "Lalmohan", "Monpura", "Tazumuddin"],
+  "Bogura": ["Adamdighi", "Bogura Sadar", "Dhunat", "Dupchanchia", "Gabtali", "Kahaloo", "Nandigram", "Sariakandi", "Shajahanpur", "Sherpur", "Shibganj", "Sonatala"],
   "Brahmanbaria": ["Akhaura", "Ashuganj", "Bancharampur", "Bijoynagar", "Brahmanbaria Sadar", "Kasba", "Nabinagar", "Nasirnagar", "Sarail"],
-  "Chandpur": ["Chandpur Sadar", "Faridgonj", "Haimchar", "Hajiganj", "Kachua", "Matlab North", "Matlab South", "Shahrasti"],
-  "Chapainawabganj": ["Bholahat", "Chapainawabganj Sadar", "Gomostapur", "Nachol", "Shibganj"],
-  "Chattogram": ["Anwara", "Banshkhali", "Boalkhali", "Chandanaish", "Fatikchhari", "Hathazari", "Karnafuli", "Lohagara", "Mirsharai", "Patiya", "Rangunia", "Raozan", "Sandwip", "Satkania", "Sitakunda"],
+  "Chandpur": ["Chandpur Sadar", "Faridganj", "Haimchar", "Hajiganj", "Kachua", "Matlab Dakshin", "Matlab Uttar", "Shahrasti"],
+  "Chapainawabganj": ["Bholahat", "Chapainawabganj Sadar", "Gomastapur", "Nachol", "Shibganj"],
+  "Chattogram": ["Anwara", "Banshkhali", "Boalkhali", "Chandanaish", "Chattogram Sadar", "Fatikchhari", "Hathazari", "Karnafuli", "Lohagara", "Mirsharai", "Patiya", "Rangunia", "Raozan", "Sandwip", "Satkania", "Sitakunda"],
   "Chuadanga": ["Alamdanga", "Chuadanga Sadar", "Damurhuda", "Jibannagar"],
-  "Cox's Bazar": ["Chakaria", "Coxsbazar Sadar", "Eidgaon", "Kutubdia", "Moheshkhali", "Pekua", "Ramu", "Teknaf", "Ukhiya"],
-  "Cumilla": ["Barura", "Brahmanpara", "Burichang", "Chandina", "Chauddagram", "Comilla Sadar", "Daudkandi", "Debidwar", "Homna", "Laksam", "Lalmai", "Meghna", "Monohargonj", "Muradnagar", "Nangalkot", "Sadarsouth", "Titas"],
-  "Dhaka": ["Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"],
+  "Cox's Bazar": ["Chakaria", "Cox's Bazar Sadar", "Eidgaon", "Kutubdia", "Moheshkhali", "Pekua", "Ramu", "Teknaf", "Ukhiya"],
+  "Cumilla": ["Barura", "Brahmanpara", "Burichang", "Chandina", "Chauddagram", "Cumilla Sadar", "Cumilla Sadar Dakshin", "Daudkandi", "Debidwar", "Homna", "Laksam", "Lalmai", "Meghna", "Monohorgonj", "Muradnagar", "Nangalkot", "Titas"],
+  "Dhaka": ["Adabor", "Badda", "Banani", "Bangshal", "Bhashantek", "Bimanbandar", "Cantonment", "Chawkbazar", "Dakshinkhan", "Darus Salam", "Demra", "Dhanmondi", "Gendaria", "Gulshan", "Hatirjheel", "Hazaribagh", "Jatrabari", "Kadamtali", "Kafrul", "Kalabagan", "Kamrangirchar", "Khilgaon", "Khilkhet", "Kotwali", "Lalbagh", "Mirpur", "Mohammadpur", "Motijheel", "Mugda", "New Market", "Pallabi", "Paltan", "Ramna", "Rampura", "Sabujbagh", "Shah Ali", "Shahbagh", "Shahjahanpur", "Sher-e-Bangla Nagar", "Shyampur", "Sutrapur", "Tejgaon", "Tejgaon Industrial Area", "Turag", "Uttar Khan", "Uttara East", "Uttara West", "Vatara", "Wari"],
+  "Dhaka Sub-urban": ["Ashulia", "Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar", "Tongi"],
   "Dinajpur": ["Birampur", "Birganj", "Birol", "Bochaganj", "Chirirbandar", "Dinajpur Sadar", "Fulbari", "Ghoraghat", "Hakimpur", "Kaharol", "Khansama", "Nawabganj", "Parbatipur"],
-  "Faridpur": ["Alfadanga", "Bhanga", "Boalmari", "Charbhadrasan", "Faridpur Sadar", "Madhukhali", "Nagarkanda", "Sadarpur", "Saltha"],
+  "Faridpur": ["Alfadanga", "Bhanga", "Boalmari", "Char Bhadrasan", "Faridpur Sadar", "Madhukhali", "Nagarkanda", "Sadarpur", "Saltha"],
   "Feni": ["Chhagalnaiya", "Daganbhuiyan", "Feni Sadar", "Fulgazi", "Parshuram", "Sonagazi"],
   "Gaibandha": ["Gaibandha Sadar", "Gobindaganj", "Palashbari", "Phulchari", "Sadullapur", "Saghata", "Sundarganj"],
   "Gazipur": ["Gazipur Sadar", "Kaliakair", "Kaliganj", "Kapasia", "Sreepur"],
   "Gopalganj": ["Gopalganj Sadar", "Kashiani", "Kotalipara", "Muksudpur", "Tungipara"],
   "Habiganj": ["Ajmiriganj", "Bahubal", "Baniachong", "Chunarughat", "Habiganj Sadar", "Lakhai", "Madhabpur", "Nabiganj"],
-  "Jamalpur": ["Bokshiganj", "Dewangonj", "Islampur", "Jamalpur Sadar", "Madarganj", "Melandah", "Sarishabari"],
-  "Jashore": ["Abhaynagar", "Bagherpara", "Chougachha", "Jessore Sadar", "Jhikargacha", "Keshabpur", "Manirampur", "Sharsha"],
+  "Jamalpur": ["Bakshiganj", "Dewanganj", "Islampur", "Jamalpur Sadar", "Madarganj", "Melandah", "Sarishabari"],
+  "Jashore": ["Abhaynagar", "Bagherpara", "Chaugachha", "Jashore Sadar", "Jhikargacha", "Keshabpur", "Manirampur", "Sharsha"],
   "Jhalokati": ["Jhalakathi Sadar", "Kathalia", "Nalchity", "Rajapur"],
-  "Jhenaidah": ["Harinakundu", "Jhenaidah Sadar", "Kaliganj", "Kotchandpur", "Moheshpur", "Shailkupa"],
+  "Jhenaidah": ["Harinakunda", "Jhenaidah Sadar", "Kaliganj", "Kotchandpur", "Moheshpur", "Shailkupa"],
   "Joypurhat": ["Akkelpur", "Joypurhat Sadar", "Kalai", "Khetlal", "Panchbibi"],
   "Khagrachhari": ["Dighinala", "Guimara", "Khagrachhari Sadar", "Laxmichhari", "Manikchari", "Matiranga", "Mohalchari", "Panchari", "Ramgarh"],
-  "Khulna": ["Botiaghata", "Dakop", "Digholia", "Dumuria", "Fultola", "Koyra", "Paikgasa", "Rupsha", "Terokhada"],
-  "Kishoreganj": ["Austagram", "Bajitpur", "Bhairab", "Hossainpur", "Itna", "Karimgonj", "Katiadi", "Kishoreganj Sadar", "Kuliarchar", "Mithamoin", "Nikli", "Pakundia", "Tarail"],
-  "Kurigram": ["Bhurungamari", "Charrajibpur", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Rowmari", "Ulipur"],
+  "Khulna": ["Batiaghata", "Dacope", "Dighalia", "Dumuria", "Khulna Sadar", "Koyra", "Paikgachha", "Phultala", "Rupsha", "Terokhada"],
+  "Kishoreganj": ["Austagram", "Bajitpur", "Bhairab", "Hossainpur", "Itna", "Karimganj", "Katiadi", "Kishoreganj Sadar", "Kuliarchar", "Mithamoin", "Nikli", "Pakundia", "Tarail"],
+  "Kurigram": ["Bhurungamari", "Char Rajibpur", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Rowmari", "Ulipur"],
   "Kushtia": ["Bheramara", "Daulatpur", "Khoksa", "Kumarkhali", "Kushtia Sadar", "Mirpur"],
   "Lakshmipur": ["Kamalnagar", "Lakshmipur Sadar", "Raipur", "Ramganj", "Ramgati"],
   "Lalmonirhat": ["Aditmari", "Hatibandha", "Kaliganj", "Lalmonirhat Sadar", "Patgram"],
   "Madaripur": ["Dasar", "Kalkini", "Madaripur Sadar", "Rajoir", "Shibchar"],
   "Magura": ["Magura Sadar", "Mohammadpur", "Shalikha", "Sreepur"],
-  "Manikganj": ["Doulatpur", "Gior", "Harirampur", "Manikganj Sadar", "Saturia", "Shibaloy", "Singiar"],
+  "Manikganj": ["Daulatpur", "Ghior", "Harirampur", "Manikganj Sadar", "Saturia", "Shivalaya", "Singair"],
   "Meherpur": ["Gangni", "Meherpur Sadar", "Mujibnagar"],
-  "Moulvibazar": ["Barlekha", "Juri", "Kamolganj", "Kulaura", "Moulvibazar Sadar", "Rajnagar", "Sreemangal"],
-  "Munshiganj": ["Gajaria", "Louhajanj", "Munshiganj Sadar", "Sirajdikhan", "Sreenagar", "Tongibari"],
-  "Mymensingh": ["Bhaluka", "Dhobaura", "Fulbaria", "Gafargaon", "Gouripur", "Haluaghat", "Iswarganj", "Muktagacha", "Mymensingh Sadar", "Nandail", "Phulpur", "Tarakanda", "Trishal"],
+  "Moulvibazar": ["Barlekha", "Juri", "Kamalganj", "Kulaura", "Moulvibazar Sadar", "Rajnagar", "Sreemangal"],
+  "Munshiganj": ["Gajaria", "Louhajang", "Munshiganj Sadar", "Sirajdikhan", "Sreenagar", "Tongibari"],
+  "Mymensingh": ["Bhaluka", "Dhobaura", "Fulbaria", "Gafargaon", "Gouripur", "Haluaghat", "Ishwarganj", "Muktagacha", "Mymensingh Sadar", "Nandail", "Phulpur", "Tarakanda", "Trishal"],
   "Naogaon": ["Atrai", "Badalgachi", "Dhamoirhat", "Manda", "Mohadevpur", "Naogaon Sadar", "Niamatpur", "Patnitala", "Porsha", "Raninagar", "Sapahar"],
-  "Narail": ["Kalia", "Lohagara", "Narail Sadar"],
+  "Narail": ["Kalia", "Lohagora", "Narail Sadar"],
   "Narayanganj": ["Araihazar", "Bandar", "Narayanganj Sadar", "Rupganj", "Sonargaon"],
   "Narsingdi": ["Belabo", "Monohardi", "Narsingdi Sadar", "Palash", "Raipura", "Shibpur"],
   "Natore": ["Bagatipara", "Baraigram", "Gurudaspur", "Lalpur", "Naldanga", "Natore Sadar", "Singra"],
-  "Netrokona": ["Atpara", "Barhatta", "Durgapur", "Kalmakanda", "Kendua", "Khaliajuri", "Madan", "Mohongonj", "Netrokona Sadar", "Purbadhala"],
-  "Nilphamari": ["Dimla", "Domar", "Jaldhaka", "Kishorganj", "Nilphamari Sadar", "Syedpur"],
-  "Noakhali": ["Begumganj", "Chatkhil", "Companiganj", "Hatia", "Kabirhat", "Noakhali Sadar", "Senbug", "Sonaimori", "Subarnachar"],
-  "Pabna": ["Atghoria", "Bera", "Bhangura", "Chatmohar", "Faridpur", "Ishurdi", "Pabna Sadar", "Santhia", "Sujanagar"],
+  "Netrokona": ["Atpara", "Barhatta", "Durgapur", "Kalmakanda", "Kendua", "Khaliajuri", "Madan", "Mohanganj", "Netrokona Sadar", "Purbadhala"],
+  "Nilphamari": ["Dimla", "Domar", "Jaldhaka", "Kishoreganj", "Nilphamari Sadar", "Saidpur"],
+  "Noakhali": ["Begumganj", "Chatkhil", "Companiganj", "Hatia", "Kabirhat", "Noakhali Sadar", "Senbagh", "Sonaimuri", "Subarnachar"],
+  "Pabna": ["Atgharia", "Bera", "Bhangura", "Chatmohar", "Faridpur", "Ishurdi", "Pabna Sadar", "Santhia", "Sujanagar"],
   "Panchagarh": ["Atwari", "Boda", "Debiganj", "Panchagarh Sadar", "Tetulia"],
   "Patuakhali": ["Bauphal", "Dashmina", "Dumki", "Galachipa", "Kalapara", "Mirzaganj", "Patuakhali Sadar", "Rangabali"],
   "Pirojpur": ["Bhandaria", "Kawkhali", "Mathbaria", "Nazirpur", "Nesarabad", "Pirojpur Sadar", "Zianagar"],
-  "Rajbari": ["Baliakandi", "Goalanda", "Kalukhali", "Pangsa", "Rajbari Sadar"],
-  "Rajshahi": ["Bagha", "Bagmara", "Charghat", "Durgapur", "Godagari", "Mohonpur", "Paba", "Puthia", "Tanore"],
+  "Rajbari": ["Baliakandi", "Goalanda", "Kalukhali", "Pangsha", "Rajbari Sadar"],
+  "Rajshahi": ["Bagha", "Bagmara", "Charghat", "Durgapur", "Godagari", "Mohanpur", "Paba", "Puthia", "Rajshahi Sadar", "Tanore"],
   "Rangamati": ["Baghaichari", "Barkal", "Belaichari", "Juraichari", "Kaptai", "Kawkhali", "Langadu", "Naniarchar", "Rajasthali", "Rangamati Sadar"],
-  "Rangpur": ["Badargonj", "Gangachara", "Kaunia", "Mithapukur", "Pirgacha", "Pirgonj", "Rangpur Sadar", "Taragonj"],
+  "Rangpur": ["Badarganj", "Gangachara", "Kaunia", "Mithapukur", "Pirgacha", "Pirganj", "Rangpur Sadar", "Taraganj"],
   "Satkhira": ["Assasuni", "Debhata", "Kalaroa", "Kaliganj", "Satkhira Sadar", "Shyamnagar", "Tala"],
   "Shariatpur": ["Bhedarganj", "Damudya", "Gosairhat", "Naria", "Shariatpur Sadar", "Zajira"],
-  "Sherpur": ["Jhenaigati", "Nalitabari", "Nokla", "Sherpur Sadar", "Sreebordi"],
-  "Sirajganj": ["Belkuchi", "Chauhali", "Kamarkhand", "Kazipur", "Raigonj", "Shahjadpur", "Sirajganj Sadar", "Tarash", "Ullapara"],
+  "Sherpur": ["Jhenaigati", "Nalitabari", "Nokla", "Sherpur Sadar", "Sreebardi"],
+  "Sirajganj": ["Belkuchi", "Chauhali", "Kamarkhanda", "Kazipur", "Raiganj", "Shahjadpur", "Sirajganj Sadar", "Tarash", "Ullapara"],
   "Sunamganj": ["Bishwambarpur", "Chhatak", "Derai", "Dharmapasha", "Dowarabazar", "Jagannathpur", "Jamalganj", "Madhyanagar", "Shalla", "South Sunamganj", "Sunamganj Sadar", "Tahirpur"],
-  "Sylhet": ["Balaganj", "Beanibazar", "Bishwanath", "Companiganj", "Dakshinsurma", "Fenchuganj", "Golapganj", "Gowainghat", "Jaintiapur", "Kanaighat", "Osmaninagar", "Sylhet Sadar", "Zakiganj"],
+  "Sylhet": ["Balaganj", "Beanibazar", "Bishwanath", "Companiganj", "Dakshin Surma", "Fenchuganj", "Golapganj", "Gowainghat", "Jaintiapur", "Kanaighat", "Osmaninagar", "Sylhet Sadar", "Zakiganj"],
   "Tangail": ["Basail", "Bhuapur", "Delduar", "Dhanbari", "Ghatail", "Gopalpur", "Kalihati", "Madhupur", "Mirzapur", "Nagarpur", "Sakhipur", "Tangail Sadar"],
   "Thakurgaon": ["Baliadangi", "Haripur", "Pirganj", "Ranisankail", "Thakurgaon Sadar"]
+};
+/* Bangla names shown when the site language is Bangla (the saved value stays English) */
+const BD_PLACE_BN = {
+  "Abhaynagar":"অভয়নগর",
+  "Adabor":"আদাবর",
+  "Adamdighi":"আদমদিঘি",
+  "Aditmari":"আদিতমারী",
+  "Agailjhara":"আগৈলঝাড়া",
+  "Ajmiriganj":"আজমিরীগঞ্জ",
+  "Akhaura":"আখাউড়া",
+  "Akkelpur":"আক্কেলপুর",
+  "Alamdanga":"আলমডাঙ্গা",
+  "Alfadanga":"আলফাডাঙ্গা",
+  "Alikadam":"আলীকদম",
+  "Amtali":"আমতলী",
+  "Anwara":"আনোয়ারা",
+  "Araihazar":"আড়াইহাজার",
+  "Ashuganj":"আশুগঞ্জ",
+  "Ashulia":"আশুলিয়া",
+  "Assasuni":"আশাশুনি",
+  "Atgharia":"আটঘরিয়া",
+  "Atpara":"আটপাড়া",
+  "Atrai":"আত্রাই",
+  "Atwari":"আটোয়ারী",
+  "Austagram":"অষ্টগ্রাম",
+  "Babuganj":"বাবুগঞ্জ",
+  "Badalgachi":"বদলগাছী",
+  "Badarganj":"বদরগঞ্জ",
+  "Badda":"বাড্ডা",
+  "Bagatipara":"বাগাতিপাড়া",
+  "Bagerhat":"বাগেরহাট",
+  "Bagerhat Sadar":"বাগেরহাট সদর",
+  "Bagha":"বাঘা",
+  "Baghaichari":"বাঘাইছড়ি",
+  "Bagherpara":"বাঘারপাড়া",
+  "Bagmara":"বাগমারা",
+  "Bahubal":"বাহুবল",
+  "Bajitpur":"বাজিতপুর",
+  "Bakerganj":"বাকেরগঞ্জ",
+  "Bakshiganj":"বকশীগঞ্জ",
+  "Balaganj":"বালাগঞ্জ",
+  "Baliadangi":"বালিয়াডাঙ্গী",
+  "Baliakandi":"বালিয়াকান্দি",
+  "Bamna":"বামনা",
+  "Banani":"বনানী",
+  "Banaripara":"বানারীপাড়া",
+  "Bancharampur":"বাঞ্ছারামপুর",
+  "Bandar":"বন্দর",
+  "Bandarban":"বান্দরবান",
+  "Bandarban Sadar":"বান্দরবান সদর",
+  "Bangshal":"বংশাল",
+  "Baniachong":"বানিয়াচং",
+  "Banshkhali":"বাঁশখালী",
+  "Baraigram":"বড়াইগ্রাম",
+  "Barguna":"বরগুনা",
+  "Barguna Sadar":"বরগুনা সদর",
+  "Barhatta":"বারহাট্টা",
+  "Barishal":"বরিশাল",
+  "Barishal Sadar":"বরিশাল সদর",
+  "Barkal":"বরকল",
+  "Barlekha":"বড়লেখা",
+  "Barura":"বরুড়া",
+  "Basail":"বাসাইল",
+  "Batiaghata":"বটিয়াঘাটা",
+  "Bauphal":"বাউফল",
+  "Beanibazar":"বিয়ানীবাজার",
+  "Begumganj":"বেগমগঞ্জ",
+  "Belabo":"বেলাবো",
+  "Belaichari":"বিলাইছড়ি",
+  "Belkuchi":"বেলকুচি",
+  "Bera":"বেড়া",
+  "Betagi":"বেতাগী",
+  "Bhairab":"ভৈরব",
+  "Bhaluka":"ভালুকা",
+  "Bhandaria":"ভান্ডারিয়া",
+  "Bhanga":"ভাঙ্গা",
+  "Bhangura":"ভাঙ্গুড়া",
+  "Bhashantek":"ভাষানটেক",
+  "Bhedarganj":"ভেদরগঞ্জ",
+  "Bheramara":"ভেড়ামারা",
+  "Bhola":"ভোলা",
+  "Bhola Sadar":"ভোলা সদর",
+  "Bholahat":"ভোলাহাট",
+  "Bhuapur":"ভুয়াপুর",
+  "Bhurungamari":"ভুরুঙ্গামারী",
+  "Bijoynagar":"বিজয়নগর",
+  "Bimanbandar":"বিমানবন্দর",
+  "Birampur":"বিরামপুর",
+  "Birganj":"বীরগঞ্জ",
+  "Birol":"বিরল",
+  "Bishwambarpur":"বিশ্বম্ভরপুর",
+  "Bishwanath":"বিশ্বনাথ",
+  "Boalkhali":"বোয়ালখালী",
+  "Boalmari":"বোয়ালমারী",
+  "Bochaganj":"বোচাগঞ্জ",
+  "Boda":"বোদা",
+  "Bogura":"বগুড়া",
+  "Bogura Sadar":"বগুড়া সদর",
+  "Borhanuddin":"বোরহান উদ্দিন",
+  "Brahmanbaria":"ব্রাহ্মণবাড়িয়া",
+  "Brahmanbaria Sadar":"ব্রাহ্মণবাড়িয়া সদর",
+  "Brahmanpara":"ব্রাহ্মণপাড়া",
+  "Burichang":"বুড়িচং",
+  "Cantonment":"ক্যান্টনমেন্ট",
+  "Chakaria":"চকরিয়া",
+  "Chandanaish":"চন্দনাইশ",
+  "Chandina":"চান্দিনা",
+  "Chandpur":"চাঁদপুর",
+  "Chandpur Sadar":"চাঁদপুর সদর",
+  "Chapainawabganj":"চাঁপাইনবাবগঞ্জ",
+  "Chapainawabganj Sadar":"চাঁপাইনবাবগঞ্জ সদর",
+  "Char Bhadrasan":"চরভদ্রাসন",
+  "Char Fasson":"চরফ্যাশন",
+  "Char Rajibpur":"চর রাজিবপুর",
+  "Charghat":"চারঘাট",
+  "Chatkhil":"চাটখিল",
+  "Chatmohar":"চাটমোহর",
+  "Chattogram":"চট্টগ্রাম",
+  "Chattogram Sadar":"চট্টগ্রাম সদর",
+  "Chauddagram":"চৌদ্দগ্রাম",
+  "Chaugachha":"চৌগাছা",
+  "Chauhali":"চৌহালি",
+  "Chawkbazar":"চকবাজার",
+  "Chhagalnaiya":"ছাগলনাইয়া",
+  "Chhatak":"ছাতক",
+  "Chilmari":"চিলমারী",
+  "Chirirbandar":"চিরিরবন্দর",
+  "Chitalmari":"চিতলমারী",
+  "Chuadanga":"চুয়াডাঙ্গা",
+  "Chuadanga Sadar":"চুয়াডাঙ্গা সদর",
+  "Chunarughat":"চুনারুঘাট",
+  "Companiganj":"কোম্পানীগঞ্জ",
+  "Cox's Bazar":"কক্সবাজার",
+  "Cox's Bazar Sadar":"কক্সবাজার সদর",
+  "Cumilla":"কুমিল্লা",
+  "Cumilla Sadar":"কুমিল্লা সদর",
+  "Cumilla Sadar Dakshin":"সদর দক্ষিণ",
+  "Dacope":"দাকোপ",
+  "Daganbhuiyan":"দাগনভূঞা",
+  "Dakshin Surma":"দক্ষিণ সুরমা",
+  "Dakshinkhan":"দক্ষিণখান",
+  "Damudya":"ডামুড্যা",
+  "Damurhuda":"দামুড়হুদা",
+  "Darus Salam":"দারুস সালাম",
+  "Dasar":"ডাসার",
+  "Dashmina":"দশমিনা",
+  "Daudkandi":"দাউদকান্দি",
+  "Daulatkhan":"দৌলতখান",
+  "Daulatpur":"দৌলতপুর",
+  "Debhata":"দেবহাটা",
+  "Debidwar":"দেবিদ্বার",
+  "Debiganj":"দেবীগঞ্জ",
+  "Delduar":"দেলদুয়ার",
+  "Demra":"ডেমরা",
+  "Derai":"দিরাই",
+  "Dewanganj":"দেওয়ানগঞ্জ",
+  "Dhaka":"ঢাকা",
+  "Dhaka Sub-urban":"ঢাকা (শহরতলী)",
+  "Dhamoirhat":"ধামইরহাট",
+  "Dhamrai":"ধামরাই",
+  "Dhanbari":"ধনবাড়ী",
+  "Dhanmondi":"ধানমন্ডি",
+  "Dharmapasha":"ধর্মপাশা",
+  "Dhobaura":"ধোবাউড়া",
+  "Dhunat":"ধুনট",
+  "Dighalia":"দিঘলিয়া",
+  "Dighinala":"দিঘীনালা",
+  "Dimla":"ডিমলা",
+  "Dinajpur":"দিনাজপুর",
+  "Dinajpur Sadar":"দিনাজপুর সদর",
+  "Dohar":"দোহার",
+  "Domar":"ডোমার",
+  "Dowarabazar":"দোয়ারাবাজার",
+  "Dumki":"দুমকি",
+  "Dumuria":"ডুমুরিয়া",
+  "Dupchanchia":"দুপচাচিঁয়া",
+  "Durgapur":"দুর্গাপুর",
+  "Eidgaon":"ঈদগাঁও",
+  "Fakirhat":"ফকিরহাট",
+  "Faridganj":"ফরিদগঞ্জ",
+  "Faridpur":"ফরিদপুর",
+  "Faridpur Sadar":"ফরিদপুর সদর",
+  "Fatikchhari":"ফটিকছড়ি",
+  "Fenchuganj":"ফেঞ্চুগঞ্জ",
+  "Feni":"ফেনী",
+  "Feni Sadar":"ফেনী সদর",
+  "Fulbari":"ফুলবাড়ী",
+  "Fulbaria":"ফুলবাড়ীয়া",
+  "Fulgazi":"ফুলগাজী",
+  "Gabtali":"গাবতলী",
+  "Gafargaon":"গফরগাঁও",
+  "Gaibandha":"গাইবান্ধা",
+  "Gaibandha Sadar":"গাইবান্ধা সদর",
+  "Gajaria":"গজারিয়া",
+  "Galachipa":"গলাচিপা",
+  "Gangachara":"গংগাচড়া",
+  "Gangni":"গাংনী",
+  "Gazipur":"গাজীপুর",
+  "Gazipur Sadar":"গাজীপুর সদর",
+  "Gendaria":"গেন্ডারিয়া",
+  "Ghatail":"ঘাটাইল",
+  "Ghior":"ঘিওর",
+  "Ghoraghat":"ঘোড়াঘাট",
+  "Goalanda":"গোয়ালন্দ",
+  "Gobindaganj":"গোবিন্দগঞ্জ",
+  "Godagari":"গোদাগাড়ী",
+  "Golapganj":"গোলাপগঞ্জ",
+  "Gomastapur":"গোমস্তাপুর",
+  "Gopalganj":"গোপালগঞ্জ",
+  "Gopalganj Sadar":"গোপালগঞ্জ সদর",
+  "Gopalpur":"গোপালপুর",
+  "Gosairhat":"গোসাইরহাট",
+  "Gouripur":"গৌরীপুর",
+  "Gournadi":"গৌরনদী",
+  "Gowainghat":"গোয়াইনঘাট",
+  "Guimara":"গুইমারা",
+  "Gulshan":"গুলশান",
+  "Gurudaspur":"গুরুদাসপুর",
+  "Habiganj":"হবিগঞ্জ",
+  "Habiganj Sadar":"হবিগঞ্জ সদর",
+  "Haimchar":"হাইমচর",
+  "Hajiganj":"হাজীগঞ্জ",
+  "Hakimpur":"হাকিমপুর",
+  "Haluaghat":"হালুয়াঘাট",
+  "Harinakunda":"হরিণাকুন্ডু",
+  "Haripur":"হরিপুর",
+  "Harirampur":"হরিরামপুর",
+  "Hathazari":"হাটহাজারী",
+  "Hatia":"হাতিয়া",
+  "Hatibandha":"হাতীবান্ধা",
+  "Hatirjheel":"হাতিরঝিল",
+  "Hazaribagh":"হাজারীবাগ",
+  "Hizla":"হিজলা",
+  "Homna":"হোমনা",
+  "Hossainpur":"হোসেনপুর",
+  "Ishurdi":"ঈশ্বরদী",
+  "Ishwarganj":"ঈশ্বরগঞ্জ",
+  "Islampur":"ইসলামপুর",
+  "Itna":"ইটনা",
+  "Jagannathpur":"জগন্নাথপুর",
+  "Jaintiapur":"জৈন্তাপুর",
+  "Jaldhaka":"জলঢাকা",
+  "Jamalganj":"জামালগঞ্জ",
+  "Jamalpur":"জামালপুর",
+  "Jamalpur Sadar":"জামালপুর সদর",
+  "Jashore":"যশোর",
+  "Jashore Sadar":"যশোর সদর",
+  "Jatrabari":"যাত্রাবাড়ী",
+  "Jhalakathi Sadar":"ঝালকাঠি সদর",
+  "Jhalokati":"ঝালকাঠি",
+  "Jhenaidah":"ঝিনাইদহ",
+  "Jhenaidah Sadar":"ঝিনাইদহ সদর",
+  "Jhenaigati":"ঝিনাইগাতী",
+  "Jhikargacha":"ঝিকরগাছা",
+  "Jibannagar":"জীবননগর",
+  "Joypurhat":"জয়পুরহাট",
+  "Joypurhat Sadar":"জয়পুরহাট সদর",
+  "Juraichari":"জুরাছড়ি",
+  "Juri":"জুড়ী",
+  "Kabirhat":"কবিরহাট",
+  "Kachua":"কচুয়া",
+  "Kadamtali":"কদমতলী",
+  "Kafrul":"কাফরুল",
+  "Kahaloo":"কাহালু",
+  "Kaharol":"কাহারোল",
+  "Kalabagan":"কলাবাগান",
+  "Kalai":"কালাই",
+  "Kalapara":"কলাপাড়া",
+  "Kalaroa":"কলারোয়া",
+  "Kalia":"কালিয়া",
+  "Kaliakair":"কালিয়াকৈর",
+  "Kaliganj":"কালীগঞ্জ",
+  "Kalihati":"কালিহাতী",
+  "Kalkini":"কালকিনি",
+  "Kalmakanda":"কলমাকান্দা",
+  "Kalukhali":"কালুখালী",
+  "Kamalganj":"কমলগঞ্জ",
+  "Kamalnagar":"কমলনগর",
+  "Kamarkhanda":"কামারখন্দ",
+  "Kamrangirchar":"কামরাঙ্গীরচর",
+  "Kanaighat":"কানাইঘাট",
+  "Kapasia":"কাপাসিয়া",
+  "Kaptai":"কাপ্তাই",
+  "Karimganj":"করিমগঞ্জ",
+  "Karnafuli":"কর্ণফুলী",
+  "Kasba":"কসবা",
+  "Kashiani":"কাশিয়ানী",
+  "Kathalia":"কাঠালিয়া",
+  "Katiadi":"কটিয়াদী",
+  "Kaunia":"কাউনিয়া",
+  "Kawkhali":"কাউখালী",
+  "Kazipur":"কাজীপুর",
+  "Kendua":"কেন্দুয়া",
+  "Keraniganj":"কেরানীগঞ্জ",
+  "Keshabpur":"কেশবপুর",
+  "Khagrachhari":"খাগড়াছড়ি",
+  "Khagrachhari Sadar":"খাগড়াছড়ি সদর",
+  "Khaliajuri":"খালিয়াজুরী",
+  "Khansama":"খানসামা",
+  "Khetlal":"ক্ষেতলাল",
+  "Khilgaon":"খিলগাঁও",
+  "Khilkhet":"খিলক্ষেত",
+  "Khoksa":"খোকসা",
+  "Khulna":"খুলনা",
+  "Khulna Sadar":"খুলনা সদর",
+  "Kishoreganj":"কিশোরগঞ্জ",
+  "Kishoreganj Sadar":"কিশোরগঞ্জ সদর",
+  "Kotalipara":"কোটালীপাড়া",
+  "Kotchandpur":"কোটচাঁদপুর",
+  "Kotwali":"কোতোয়ালী",
+  "Koyra":"কয়রা",
+  "Kulaura":"কুলাউড়া",
+  "Kuliarchar":"কুলিয়ারচর",
+  "Kumarkhali":"কুমারখালী",
+  "Kurigram":"কুড়িগ্রাম",
+  "Kurigram Sadar":"কুড়িগ্রাম সদর",
+  "Kushtia":"কুষ্টিয়া",
+  "Kushtia Sadar":"কুষ্টিয়া সদর",
+  "Kutubdia":"কুতুবদিয়া",
+  "Lakhai":"লাখাই",
+  "Laksam":"লাকসাম",
+  "Lakshmipur":"লক্ষ্মীপুর",
+  "Lakshmipur Sadar":"লক্ষ্মীপুর সদর",
+  "Lalbagh":"লালবাগ",
+  "Lalmai":"লালমাই",
+  "Lalmohan":"লালমোহন",
+  "Lalmonirhat":"লালমনিরহাট",
+  "Lalmonirhat Sadar":"লালমনিরহাট সদর",
+  "Lalpur":"লালপুর",
+  "Lama":"লামা",
+  "Langadu":"লংগদু",
+  "Laxmichhari":"লক্ষীছড়ি",
+  "Lohagara":"লোহাগাড়া",
+  "Lohagora":"লোহাগড়া",
+  "Louhajang":"লৌহজং",
+  "Madan":"মদন",
+  "Madarganj":"মাদারগঞ্জ",
+  "Madaripur":"মাদারীপুর",
+  "Madaripur Sadar":"মাদারীপুর সদর",
+  "Madhabpur":"মাধবপুর",
+  "Madhukhali":"মধুখালী",
+  "Madhupur":"মধুপুর",
+  "Madhyanagar":"মধ্যনগর",
+  "Magura":"মাগুরা",
+  "Magura Sadar":"মাগুরা সদর",
+  "Manda":"মান্দা",
+  "Manikchari":"মানিকছড়ি",
+  "Manikganj":"মানিকগঞ্জ",
+  "Manikganj Sadar":"মানিকগঞ্জ সদর",
+  "Manirampur":"মণিরামপুর",
+  "Mathbaria":"মঠবাড়ীয়া",
+  "Matiranga":"মাটিরাঙ্গা",
+  "Matlab Dakshin":"মতলব দক্ষিণ",
+  "Matlab Uttar":"মতলব উত্তর",
+  "Meghna":"মেঘনা",
+  "Mehendiganj":"মেহেন্দিগঞ্জ",
+  "Meherpur":"মেহেরপুর",
+  "Meherpur Sadar":"মেহেরপুর সদর",
+  "Melandah":"মেলান্দহ",
+  "Mirpur":"মিরপুর",
+  "Mirsharai":"মীরসরাই",
+  "Mirzaganj":"মির্জাগঞ্জ",
+  "Mirzapur":"মির্জাপুর",
+  "Mithamoin":"মিঠামইন",
+  "Mithapukur":"মিঠাপুকুর",
+  "Mohadevpur":"মহাদেবপুর",
+  "Mohalchari":"মহালছড়ি",
+  "Mohammadpur":"মোহাম্মদপুর",
+  "Mohanganj":"মোহনগঞ্জ",
+  "Mohanpur":"মোহনপুর",
+  "Moheshkhali":"মহেশখালী",
+  "Moheshpur":"মহেশপুর",
+  "Mollahat":"মোল্লাহাট",
+  "Mongla":"মোংলা",
+  "Monohardi":"মনোহরদী",
+  "Monohorgonj":"মনোহরগঞ্জ",
+  "Monpura":"মনপুরা",
+  "Morrelganj":"মোড়েলগঞ্জ",
+  "Motijheel":"মতিঝিল",
+  "Moulvibazar":"মৌলভীবাজার",
+  "Moulvibazar Sadar":"মৌলভীবাজার সদর",
+  "Mugda":"মুগদা",
+  "Mujibnagar":"মুজিবনগর",
+  "Muksudpur":"মুকসুদপুর",
+  "Muktagacha":"মুক্তাগাছা",
+  "Muladi":"মুলাদী",
+  "Munshiganj":"মুন্সিগঞ্জ",
+  "Munshiganj Sadar":"মুন্সিগঞ্জ সদর",
+  "Muradnagar":"মুরাদনগর",
+  "Mymensingh":"ময়মনসিংহ",
+  "Mymensingh Sadar":"ময়মনসিংহ সদর",
+  "Nabiganj":"নবীগঞ্জ",
+  "Nabinagar":"নবীনগর",
+  "Nachol":"নাচোল",
+  "Nagarkanda":"নগরকান্দা",
+  "Nagarpur":"নাগরপুর",
+  "Nageshwari":"নাগেশ্বরী",
+  "Naikhongchhari":"নাইক্ষ্যংছড়ি",
+  "Nalchity":"নলছিটি",
+  "Naldanga":"নলডাঙ্গা",
+  "Nalitabari":"নালিতাবাড়ী",
+  "Nandail":"নান্দাইল",
+  "Nandigram":"নন্দিগ্রাম",
+  "Nangalkot":"নাঙ্গলকোট",
+  "Naniarchar":"নানিয়ারচর",
+  "Naogaon":"নওগাঁ",
+  "Naogaon Sadar":"নওগাঁ সদর",
+  "Narail":"নড়াইল",
+  "Narail Sadar":"নড়াইল সদর",
+  "Narayanganj":"নারায়ণগঞ্জ",
+  "Narayanganj Sadar":"নারায়নগঞ্জ সদর",
+  "Naria":"নড়িয়া",
+  "Narsingdi":"নরসিংদী",
+  "Narsingdi Sadar":"নরসিংদী সদর",
+  "Nasirnagar":"নাসিরনগর",
+  "Natore":"নাটোর",
+  "Natore Sadar":"নাটোর সদর",
+  "Nawabganj":"নবাবগঞ্জ",
+  "Nazirpur":"নাজিরপুর",
+  "Nesarabad":"নেছারাবাদ",
+  "Netrokona":"নেত্রকোণা",
+  "Netrokona Sadar":"নেত্রকোণা সদর",
+  "New Market":"নিউ মার্কেট",
+  "Niamatpur":"নিয়ামতপুর",
+  "Nikli":"নিকলী",
+  "Nilphamari":"নীলফামারী",
+  "Nilphamari Sadar":"নীলফামারী সদর",
+  "Noakhali":"নোয়াখালী",
+  "Noakhali Sadar":"নোয়াখালী সদর",
+  "Nokla":"নকলা",
+  "Osmaninagar":"ওসমানী নগর",
+  "Paba":"পবা",
+  "Pabna":"পাবনা",
+  "Pabna Sadar":"পাবনা সদর",
+  "Paikgachha":"পাইকগাছা",
+  "Pakundia":"পাকুন্দিয়া",
+  "Palash":"পলাশ",
+  "Palashbari":"পলাশবাড়ী",
+  "Pallabi":"পল্লবী",
+  "Paltan":"পল্টন",
+  "Panchagarh":"পঞ্চগড়",
+  "Panchagarh Sadar":"পঞ্চগড় সদর",
+  "Panchari":"পানছড়ি",
+  "Panchbibi":"পাঁচবিবি",
+  "Pangsha":"পাংশা",
+  "Parbatipur":"পার্বতীপুর",
+  "Parshuram":"পরশুরাম",
+  "Patgram":"পাটগ্রাম",
+  "Patharghata":"পাথরঘাটা",
+  "Patiya":"পটিয়া",
+  "Patnitala":"পত্নিতলা",
+  "Patuakhali":"পটুয়াখালী",
+  "Patuakhali Sadar":"পটুয়াখালী সদর",
+  "Pekua":"পেকুয়া",
+  "Phulbari":"ফুলবাড়ী",
+  "Phulchari":"ফুলছড়ি",
+  "Phulpur":"ফুলপুর",
+  "Phultala":"ফুলতলা",
+  "Pirgacha":"পীরগাছা",
+  "Pirganj":"পীরগঞ্জ",
+  "Pirojpur":"পিরোজপুর",
+  "Pirojpur Sadar":"পিরোজপুর সদর",
+  "Porsha":"পোরশা",
+  "Purbadhala":"পূর্বধলা",
+  "Puthia":"পুঠিয়া",
+  "Raiganj":"রায়গঞ্জ",
+  "Raipur":"রায়পুর",
+  "Raipura":"রায়পুরা",
+  "Rajapur":"রাজাপুর",
+  "Rajarhat":"রাজারহাট",
+  "Rajasthali":"রাজস্থলী",
+  "Rajbari":"রাজবাড়ী",
+  "Rajbari Sadar":"রাজবাড়ী সদর",
+  "Rajnagar":"রাজনগর",
+  "Rajoir":"রাজৈর",
+  "Rajshahi":"রাজশাহী",
+  "Rajshahi Sadar":"রাজশাহী সদর",
+  "Ramganj":"রামগঞ্জ",
+  "Ramgarh":"রামগড়",
+  "Ramgati":"রামগতি",
+  "Ramna":"রমনা",
+  "Rampal":"রামপাল",
+  "Rampura":"রামপুরা",
+  "Ramu":"রামু",
+  "Rangabali":"রাঙ্গাবালী",
+  "Rangamati":"রাঙ্গামাটি",
+  "Rangamati Sadar":"রাঙ্গামাটি সদর",
+  "Rangpur":"রংপুর",
+  "Rangpur Sadar":"রংপুর সদর",
+  "Rangunia":"রাঙ্গুনিয়া",
+  "Raninagar":"রাণীনগর",
+  "Ranisankail":"রাণীশংকৈল",
+  "Raozan":"রাউজান",
+  "Rowangchhari":"রোয়াংছড়ি",
+  "Rowmari":"রৌমারী",
+  "Ruma":"রুমা",
+  "Rupganj":"রূপগঞ্জ",
+  "Rupsha":"রূপসা",
+  "Sabujbagh":"সবুজবাগ",
+  "Sadarpur":"সদরপুর",
+  "Sadullapur":"সাদুল্লাপুর",
+  "Saghata":"সাঘাটা",
+  "Saidpur":"সৈয়দপুর",
+  "Sakhipur":"সখিপুর",
+  "Saltha":"সালথা",
+  "Sandwip":"সন্দ্বীপ",
+  "Santhia":"সাঁথিয়া",
+  "Sapahar":"সাপাহার",
+  "Sarail":"সরাইল",
+  "Sarankhola":"শরণখোলা",
+  "Sariakandi":"সারিয়াকান্দি",
+  "Sarishabari":"সরিষাবাড়ী",
+  "Satkania":"সাতকানিয়া",
+  "Satkhira":"সাতক্ষীরা",
+  "Satkhira Sadar":"সাতক্ষীরা সদর",
+  "Saturia":"সাটুরিয়া",
+  "Savar":"সাভার",
+  "Senbagh":"সেনবাগ",
+  "Shah Ali":"শাহ আলী",
+  "Shahbagh":"শাহবাগ",
+  "Shahjadpur":"শাহজাদপুর",
+  "Shahjahanpur":"শাহজাহানপুর",
+  "Shahrasti":"শাহরাস্তি",
+  "Shailkupa":"শৈলকুপা",
+  "Shajahanpur":"শাজাহানপুর",
+  "Shalikha":"শালিখা",
+  "Shalla":"শাল্লা",
+  "Shariatpur":"শরীয়তপুর",
+  "Shariatpur Sadar":"শরিয়তপুর সদর",
+  "Sharsha":"শার্শা",
+  "Sher-e-Bangla Nagar":"শেরেবাংলা নগর",
+  "Sherpur":"শেরপুর",
+  "Sherpur Sadar":"শেরপুর সদর",
+  "Shibchar":"শিবচর",
+  "Shibganj":"শিবগঞ্জ",
+  "Shibpur":"শিবপুর",
+  "Shivalaya":"শিবালয়",
+  "Shyamnagar":"শ্যামনগর",
+  "Shyampur":"শ্যামপুর",
+  "Singair":"সিংগাইর",
+  "Singra":"সিংড়া",
+  "Sirajdikhan":"সিরাজদিখান",
+  "Sirajganj":"সিরাজগঞ্জ",
+  "Sirajganj Sadar":"সিরাজগঞ্জ সদর",
+  "Sitakunda":"সীতাকুন্ড",
+  "Sonagazi":"সোনাগাজী",
+  "Sonaimuri":"সোনাইমুড়ী",
+  "Sonargaon":"সোনারগাঁ",
+  "Sonatala":"সোনাতলা",
+  "South Sunamganj":"দক্ষিণ সুনামগঞ্জ",
+  "Sreebardi":"শ্রীবরদী",
+  "Sreemangal":"শ্রীমঙ্গল",
+  "Sreenagar":"শ্রীনগর",
+  "Sreepur":"শ্রীপুর",
+  "Subarnachar":"সুবর্ণচর",
+  "Sujanagar":"সুজানগর",
+  "Sunamganj":"সুনামগঞ্জ",
+  "Sunamganj Sadar":"সুনামগঞ্জ সদর",
+  "Sundarganj":"সুন্দরগঞ্জ",
+  "Sutrapur":"সূত্রাপুর",
+  "Sylhet":"সিলেট",
+  "Sylhet Sadar":"সিলেট সদর",
+  "Tahirpur":"তাহিরপুর",
+  "Tala":"তালা",
+  "Taltali":"তালতলি",
+  "Tangail":"টাঙ্গাইল",
+  "Tangail Sadar":"টাঙ্গাইল সদর",
+  "Tanore":"তানোর",
+  "Taraganj":"তারাগঞ্জ",
+  "Tarail":"তাড়াইল",
+  "Tarakanda":"তারাকান্দা",
+  "Tarash":"তাড়াশ",
+  "Tazumuddin":"তজুমদ্দিন",
+  "Tejgaon":"তেজগাঁও",
+  "Tejgaon Industrial Area":"তেজগাঁও শিল্প এলাকা",
+  "Teknaf":"টেকনাফ",
+  "Terokhada":"তেরখাদা",
+  "Tetulia":"তেতুলিয়া",
+  "Thakurgaon":"ঠাকুরগাঁও",
+  "Thakurgaon Sadar":"ঠাকুরগাঁও সদর",
+  "Thanchi":"থানচি",
+  "Titas":"তিতাস",
+  "Tongi":"টঙ্গী",
+  "Tongibari":"টংগীবাড়ি",
+  "Trishal":"ত্রিশাল",
+  "Tungipara":"টুংগীপাড়া",
+  "Turag":"তুরাগ",
+  "Ukhiya":"উখিয়া",
+  "Ulipur":"উলিপুর",
+  "Ullapara":"উল্লাপাড়া",
+  "Uttar Khan":"উত্তরখান",
+  "Uttara East":"উত্তরা পূর্ব",
+  "Uttara West":"উত্তরা পশ্চিম",
+  "Vatara":"ভাটারা",
+  "Wari":"ওয়ারী",
+  "Wazirpur":"উজিরপুর",
+  "Zajira":"জাজিরা",
+  "Zakiganj":"জকিগঞ্জ",
+  "Zianagar":"জিয়ানগর"
 };
 
 function brandName(st){
@@ -1694,7 +2593,7 @@ const StoreFront = (function(){
           <div class="design-grid">
             ${variants.map((v,vIdx)=>`
               <button type="button" class="design-thumb ${selectedVariants[i]===v?'selected':''}" data-item="${i}" data-variant="${vIdx}" aria-label="Design ${vIdx+1}" aria-pressed="${selectedVariants[i]===v}">
-                <img src="${v.image}" alt="Design ${vIdx+1}">
+                <img src="${v.image}" alt="Design ${vIdx+1}" loading="lazy" decoding="async">
                 <span class="design-check"><i class="fa-solid fa-check"></i></span>
               </button>
             `).join('')}
@@ -1717,7 +2616,7 @@ const StoreFront = (function(){
         const vIdx = parseInt(btn.dataset.variant,10);
         selectedVariants[itemIdx] = currentProduct.variants[vIdx];
         renderVariantItems();
-        document.getElementById('store-product-image-box').innerHTML = `<img src="${currentProduct.variants[vIdx].image}">`;
+        document.getElementById('store-product-image-box').innerHTML = `<img src="${currentProduct.variants[vIdx].image}" decoding="async">`;
       });
     });
 
@@ -1739,13 +2638,13 @@ const StoreFront = (function(){
     }
     wrap.innerHTML = gallery.map((img,i)=>`
       <div class="gallery-thumb ${i===activeIdx?'active':''}" data-idx="${i}">
-        <img src="${img}">
+        <img src="${img}" alt="" loading="lazy" decoding="async">
       </div>
     `).join('');
     wrap.querySelectorAll('.gallery-thumb').forEach(el=>{
       el.addEventListener('click', ()=>{
         const idx = parseInt(el.dataset.idx,10);
-        document.getElementById('store-product-image-box').innerHTML = `<img src="${gallery[idx]}">`;
+        document.getElementById('store-product-image-box').innerHTML = `<img src="${gallery[idx]}" decoding="async">`;
         renderGalleryThumbs(gallery, idx);
       });
     });
@@ -1769,7 +2668,7 @@ const StoreFront = (function(){
       const price = p.discount && p.discount > 0 ? p.discount : p.price;
       return `
         <div class="suggested-card" data-id="${p.id}">
-          <div class="s-img">${img ? `<img src="${img}">` : '<i class="fa-solid fa-image"></i>'}</div>
+          <div class="s-img">${img ? `<img src="${img}" loading="lazy" decoding="async">` : '<i class="fa-solid fa-image"></i>'}</div>
           <div class="s-body">
             <div class="s-name">${escapeHtml(p.name)}</div>
             <div class="s-price">${fmtMoney(price)}</div>
@@ -1824,7 +2723,7 @@ const StoreFront = (function(){
       const img = (p.images && p.images[0]) || p.image || '';
       return `
         <a class="store-home-card" href="?product=${encodeURIComponent(p.id)}">
-          <div class="h-img">${img ? `<img src="${img}" alt="${escapeHtml(p.name)}" loading="lazy">` : '<i class="fa-solid fa-image"></i>'}</div>
+          <div class="h-img">${img ? `<img src="${img}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async">` : '<i class="fa-solid fa-image"></i>'}</div>
           <div class="h-body">
             <div class="h-cat">${escapeHtml(p.category || '')}</div>
             <div class="h-name">${escapeHtml(p.name)}</div>
@@ -1871,12 +2770,12 @@ const StoreFront = (function(){
 
     const imgBox = document.getElementById('store-product-image-box');
     const gallery = (product.images && product.images.length > 0) ? product.images : (product.image ? [product.image] : []);
-    imgBox.innerHTML = gallery.length > 0 ? `<img src="${gallery[0]}">` : '<i class="fa-solid fa-image"></i>';
+    imgBox.innerHTML = gallery.length > 0 ? `<img src="${gallery[0]}" decoding="async" fetchpriority="high">` : '<i class="fa-solid fa-image"></i>';
     renderGalleryThumbs(gallery, 0);
 
     renderVariantSection();
     if(hasVariants() && selectedVariants[0]){
-      imgBox.innerHTML = `<img src="${selectedVariants[0].image}">`;
+      imgBox.innerHTML = `<img src="${selectedVariants[0].image}" decoding="async">`;
     }
 
     renderRating();
@@ -1896,7 +2795,7 @@ const StoreFront = (function(){
       tagEl.style.display='none';
     }
 
-    document.getElementById('store-product-desc').textContent = product.description || 'No description available for this product.';
+    renderDescription(product.description);
     document.getElementById('store-qty-val').textContent = qty;
 
     renderSuggestedProducts(product);
@@ -2114,6 +3013,21 @@ const StoreFront = (function(){
     document.getElementById('store-product-view').style.display = 'block';
   }
 
+  /* ===== Email notification to the shop owner (sent through Google Apps Script) ===== */
+  const ORDER_NOTIFY_URL = 'https://script.google.com/macros/s/AKfycbxLIgYRfRfSfw-NlML_3IJg2KMmUVgBoDlYzk3_yolSgiV1AXhn4NcTdpzjqPTK4bIA4g/exec'; /* same URL as DRIVE_UPLOAD_URL in admin.html */
+  const ORDER_NOTIFY_KEY = 'ibrahim2812003khalil';                                                                                                  /* same key as SECRET in the Apps Script */
+  function notifyOwnerByEmail(order){
+    try{
+      if(!ORDER_NOTIFY_URL || ORDER_NOTIFY_URL.indexOf('PASTE_') === 0) return;
+      fetch(ORDER_NOTIFY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },   /* avoids CORS preflight */
+        body: JSON.stringify({ key: ORDER_NOTIFY_KEY, action: 'order', order: order, site: location.origin + location.pathname }),
+        keepalive: true
+      }).catch(function(e){ console.warn('Order email not sent:', e); });
+    }catch(e){ console.warn('Order email not sent:', e); }
+  }
+
   function placeOrder(){
     const name = document.getElementById('chk-name').value.trim();
     const phone = document.getElementById('chk-phone').value.trim();
@@ -2218,6 +3132,7 @@ const StoreFront = (function(){
       }).catch((err)=> console.warn('Stock not updated:', err));
 
       Promise.all([saveOrder, saveCustomer, saveStock]).then(()=>{
+        notifyOwnerByEmail(order);   /* fire-and-forget: never blocks or breaks the order */
         btn.innerHTML = original;
         btn.disabled = false;
         document.getElementById('success-tracking-id').textContent = trackingId;
@@ -2236,6 +3151,8 @@ const StoreFront = (function(){
 
   function init(){
     document.getElementById('storefront-screen').style.display = 'block';
+    initCombo('chk-district', { label:'District', placeholder:'Select District', disabledPlaceholder:'Select District' });
+    initCombo('chk-thana', { label:'Upazila', placeholder:'Select Upazila', disabledPlaceholder:'Select District First' });
 
     renderStorePage();
 
@@ -2283,6 +3200,7 @@ const StoreFront = (function(){
     DataService.onRemoteUpdate = (key)=>{
       if(key === 'products' || key === 'settings'){
         if(document.getElementById('store-home-view').style.display !== 'none') renderStoreHome();
+        else if(key === 'products' && document.getElementById('store-product-view').style.display !== 'none') renderProductPage();
       } else if(key === 'reviews'){
         renderRating();
       }
@@ -2309,6 +3227,125 @@ const StoreFront = (function(){
   document.getElementById('store-footer-year').textContent = new Date().getFullYear();
   document.getElementById('store-footer-brand').textContent = brandName(SettingsService.getSettings());
   DataService.loadKeys(['reviews', 'coupons']);
+})();
+</script>
+<script>
+/* ===== LANGUAGE (Bangla default / English) ===== */
+(function(){
+  var KEY='velora_lang';
+  var lang='bn';
+  try{ lang=localStorage.getItem(KEY)||'bn'; }catch(e){}
+  var D={
+    'Track order':'অর্ডার ট্র্যাক','Our Products':'আমাদের পণ্য','Pick a product to order.':'অর্ডার করতে একটি পণ্য বেছে নিন।',
+    'No products available':'কোনো পণ্য নেই','Please check back soon.':'অনুগ্রহ করে একটু পরে দেখুন।','Store /':'স্টোর /',
+    'Fast delivery':'দ্রুত ডেলিভারি','Secure checkout':'নিরাপদ চেকআউট','Easy returns':'সহজ রিটার্ন','Quantity':'পরিমাণ',
+    'Select Design & Size':'ডিজাইন ও সাইজ বেছে নিন','Select Design':'ডিজাইন বেছে নিন','Select Size':'সাইজ বেছে নিন',
+    '(one for each item)':'(প্রতিটি পণ্যের জন্য একটি)','Buy Now':'এখনই কিনুন','This product is currently out of stock.':'এই পণ্যটি এখন স্টকে নেই।',
+    'You Might Also Like':'আপনার পছন্দ হতে পারে','← Back to product':'← পণ্যে ফিরে যান','Shipping & Billing Details':'শিপিং ও বিলিং তথ্য',
+    'Full Name':'পুরো নাম','Phone Number':'ফোন নম্বর','Email (Optional)':'ইমেইল (ঐচ্ছিক)','District':'জেলা','Upazila':'উপজেলা',
+    'Select District':'জেলা বাছাই করুন','Select District First':'আগে জেলা বাছাই করুন','Select Upazila':'উপজেলা বাছাই করুন',
+    'Full Address (House, Road, Village)':'পূর্ণ ঠিকানা (বাড়ি, রোড, গ্রাম)','Payment Method':'পেমেন্ট পদ্ধতি',
+    'Cash on Delivery':'ক্যাশ অন ডেলিভারি','Pay with cash when you receive your order':'পণ্য হাতে পেয়ে নগদ টাকায় পরিশোধ করুন',
+    'bKash (Full Payment)':'বিকাশ (সম্পূর্ণ পেমেন্ট)','Pay now & get an extra discount':'এখনই পরিশোধ করুন ও অতিরিক্ত ছাড় পান',
+    'Pay the full amount now via bKash':'বিকাশে এখনই পুরো টাকা পরিশোধ করুন','bKash Payment':'বিকাশ পেমেন্ট',
+    'Quick & secure mobile payment':'দ্রুত ও নিরাপদ মোবাইল পেমেন্ট','Amount to send':'পাঠানোর পরিমাণ','Send Money':'সেন্ড মানি','Payment':'পেমেন্ট',
+    'Your bKash Number':'আপনার বিকাশ নম্বর','Transaction ID':'ট্রানজেকশন আইডি','Pay Advance Delivery Charge via bKash':'বিকাশে অগ্রিম ডেলিভারি চার্জ দিন',
+    'Pay Full Amount via bKash':'বিকাশে পুরো টাকা দিন','Apply':'প্রয়োগ করুন','Subtotal':'সাবটোটাল','Coupon Discount':'কুপন ছাড়',
+    'Full Payment Discount':'সম্পূর্ণ পেমেন্ট ছাড়','Delivery Charge':'ডেলিভারি চার্জ','Tax':'ট্যাক্স','Total':'মোট',
+    'Advance (via bKash)':'অগ্রিম (বিকাশে)','Due on Delivery (Cash)':'ডেলিভারিতে বাকি (নগদ)','Place Order':'অর্ডার করুন','Placing order...':'অর্ডার হচ্ছে...',
+    'Track your order':'আপনার অর্ডার ট্র্যাক করুন','Enter the Tracking ID from your order message.':'অর্ডারের মেসেজ থেকে ট্র্যাকিং আইডি দিন।','Track':'ট্র্যাক',
+    'Order Placed Successfully! 🎉':'অর্ডার সফলভাবে সম্পন্ন হয়েছে! 🎉','Thank you! We\'ve received your order and will confirm it shortly.':'ধন্যবাদ! আপনার অর্ডার পেয়েছি, শীঘ্রই কনফার্ম করব।',
+    'Tracking ID':'ট্র্যাকিং আইডি','Order ID':'অর্ডার আইডি','Amount':'পরিমাণ','Track this order':'এই অর্ডার ট্র্যাক করুন',
+    'Save this Tracking ID to check your order status with us.':'অর্ডারের অবস্থা দেখতে এই ট্র্যাকিং আইডি সংরক্ষণ করুন।','Continue Shopping':'কেনাকাটা চালিয়ে যান',
+    'Out of Stock':'স্টকে নেই','Low Stock':'স্টক কম','In Stock':'স্টকে আছে','No reviews yet':'এখনো কোনো রিভিউ নেই',
+    'No description available for this product.':'এই পণ্যের কোনো বিবরণ নেই।','Pay pending':'','See more':'আরও দেখুন','No results found':'কিছু পাওয়া যায়নি','See less':'কম দেখুন',
+    'Order placed':'অর্ডার গ্রহণ করা হয়েছে','We have received your order.':'আমরা আপনার অর্ডার পেয়েছি।','Order confirmed':'অর্ডার কনফার্ম হয়েছে',
+    'Your order is confirmed and is being prepared.':'আপনার অর্ডার কনফার্ম হয়েছে এবং প্রস্তুত করা হচ্ছে।','On the way':'পথে আছে',
+    'Your order is packed and on its way to you.':'আপনার অর্ডার প্যাক হয়ে আপনার দিকে রওনা হয়েছে।','Delivered':'ডেলিভারি সম্পন্ন',
+    'Your order has been delivered. Thank you!':'আপনার অর্ডার পৌঁছে গেছে। ধন্যবাদ!','This order has been cancelled.':'এই অর্ডারটি বাতিল করা হয়েছে।',
+    'Pay on delivery':'ডেলিভারিতে দেয়','Please enter your Tracking ID':'অনুগ্রহ করে ট্র্যাকিং আইডি দিন',
+    'Please select a size for every item':'প্রতিটি পণ্যের সাইজ বাছাই করুন','Coupon applied successfully':'কুপন সফলভাবে প্রয়োগ হয়েছে',
+    'Please fill in all required delivery details':'ডেলিভারির সব প্রয়োজনীয় তথ্য পূরণ করুন',
+    'Please select a design for every item before placing your order':'অর্ডারের আগে প্রতিটি পণ্যের ডিজাইন বাছাই করুন',
+    'Please select a size for every item before placing your order':'অর্ডারের আগে প্রতিটি পণ্যের সাইজ বাছাই করুন',
+    'Could not place your order. Please check your connection and try again.':'অর্ডার করা যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।',
+    'No more stock available':'আর স্টক নেই','bKash number copied':'বিকাশ নম্বর কপি হয়েছে','Tracking ID copied':'ট্র্যাকিং আইডি কপি হয়েছে',
+    'Coupon code':'কুপন কোড','Copy number':'নম্বর কপি করুন','Copy':'কপি','Go to home page':'হোম পেজে যান'
+  };
+  if(typeof BD_PLACE_BN!=='undefined'){ for(var pk in BD_PLACE_BN){ if(D[pk]===undefined) D[pk]=BD_PLACE_BN[pk]; } }
+  var P=[ /* [regex, replacer] for dynamic strings */
+    [/^Extra (.+) OFF$/,'অতিরিক্ত $1 ছাড়'],[/^Pay now & get an extra (.+) discount$/,'এখনই পরিশোধ করে অতিরিক্ত $1 ছাড় পান'],
+    [/^(.+?) OFF$/,'$1 ছাড়'],[/^Qty: (\d+)$/,'পরিমাণ: $1'],[/^\((\d+) reviews?\)$/,'($1টি রিভিউ)'],
+    [/^(.+) \((\d+) reviews?\)$/,'$1 ($2টি রিভিউ)'],[/^You save (.+) with full payment!$/,'সম্পূর্ণ পেমেন্টে আপনি $1 সাশ্রয় করছেন!'],
+    [/^Coupon applied! You saved (.+)\.$/,'কুপন প্রয়োগ হয়েছে! আপনি $1 সাশ্রয় করেছেন।'],
+    [/^Your order is now (\w+)$/,function(m,s){var x={Pending:'অপেক্ষমাণ',Confirmed:'কনফার্ম হয়েছে',Processing:'পথে আছে',Delivered:'ডেলিভারি সম্পন্ন',Cancelled:'বাতিল'};return 'আপনার অর্ডার এখন: '+(x[s]||s);}],
+    [/^Live · (.+)$/,'লাইভ · $1'],[/^(\d+) left$/,'$1টি বাকি'],[/^Only (\d+) left$/,'মাত্র $1টি বাকি'],
+    [/^Send Money to$/,'সেন্ড মানি করুন'],[/^(Send Money|Payment) to$/,function(m,a){return (a==='Payment'?'পেমেন্ট':'সেন্ড মানি')+' করুন';}],
+    [/^Amount to send$/,'পাঠানোর পরিমাণ']
+  ];
+  var orig=new WeakMap(), origAttr=new WeakMap(), busy=false;
+  var ATTRS=['placeholder','title','aria-label'];
+  function tr(s){
+    var t=s.trim(); if(!t) return s;
+    var out=D[t];
+    if(out===undefined){ for(var i=0;i<P.length;i++){ if(P[i][0].test(t)){ out=t.replace(P[i][0],P[i][1]); break; } } }
+    return out===undefined||out==='' ? s : s.replace(t,out);
+  }
+  function textNode(n){
+    var cur=n.nodeValue, o=orig.get(n);
+    if(o && cur!==o.bn && cur!==o.en){ o=null; }      /* page changed it: new source */
+    if(!o){ o={en:cur,bn:tr(cur)}; orig.set(n,o); }
+    var want = lang==='bn' ? o.bn : o.en;
+    if(cur!==want) n.nodeValue=want;
+  }
+  function attrs(el){
+    ATTRS.forEach(function(a){
+      if(!el.hasAttribute||!el.hasAttribute(a)) return;
+      var m=origAttr.get(el)||{}, cur=el.getAttribute(a), o=m[a];
+      if(o && cur!==o.bn && cur!==o.en) o=null;
+      if(!o){ o={en:cur,bn:tr(cur)}; m[a]=o; origAttr.set(el,m); }
+      var want=lang==='bn'?o.bn:o.en; if(cur!==want) el.setAttribute(a,want);
+    });
+  }
+  function walk(root){
+    if(root.nodeType===3){ if(root.parentNode && !/^(SCRIPT|STYLE)$/.test(root.parentNode.nodeName)) textNode(root); return; }
+    if(root.nodeType!==1) return;
+    if(/^(SCRIPT|STYLE)$/.test(root.nodeName)) return;
+    attrs(root);
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT,null),n;
+    while((n=w.nextNode())){
+      if(n.nodeType===3){ if(!/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) textNode(n); } else attrs(n);
+    }
+  }
+  function apply(){
+    busy=true; try{ walk(document.body); document.documentElement.lang=lang==='bn'?'bn':'en'; }finally{ busy=false; }
+    var b=document.getElementById('lang-toggle');
+    if(b) b.querySelector('span').textContent = lang==='bn' ? 'English' : 'বাংলা';
+  }
+  function set(l){ lang=l; try{localStorage.setItem(KEY,l);}catch(e){} apply(); }
+  function mount(){
+    var bar=document.querySelector('.store-topbar'); if(!bar||document.getElementById('lang-toggle')) return;
+    var b=document.createElement('button');
+    b.id='lang-toggle'; b.type='button';
+    b.setAttribute('aria-label','Language');
+    b.innerHTML='<i class="fa-solid fa-language"></i><span></span>';
+    b.addEventListener('click',function(){ set(lang==='bn'?'en':'bn'); });
+    var t=document.getElementById('store-track-link');
+    var wrap=document.createElement('div'); wrap.className='top-actions';
+    t.parentNode.insertBefore(wrap,t); wrap.appendChild(b); wrap.appendChild(t);
+  }
+  function start(){
+    mount(); apply();
+    new MutationObserver(function(ms){
+      if(busy) return; busy=true;
+      try{ ms.forEach(function(m){
+        if(m.type==='characterData') walk(m.target);
+        else if(m.type==='attributes') attrs(m.target);
+        else m.addedNodes.forEach(walk);
+      }); }finally{ busy=false; }
+    }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:ATTRS});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
 </body>

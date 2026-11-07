@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#2563EB">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Velora">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Velora Admin</title>
-<link rel="icon" type="image/x-icon" href="logo.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -848,7 +853,7 @@ img{max-width:100%;}
 #customer-msg-text:focus{border-color:var(--primary);background:var(--white);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
 .msg-hint{font-size:12px;color:var(--text-secondary);margin-top:8px;}
 .icon-action.msg{color:#15803D;}
-@media(max-width:640px){
+@media(max-width:760px){
   .table-wrap{overflow:visible;}
   table{min-width:0 !important;}
   table,tbody,tr,td{display:block;width:100%;}
@@ -862,6 +867,133 @@ img{max-width:100%;}
   tbody td[data-label="Actions"]::before{display:none;}
   .card-header .btn,.card-header .select-input{max-width:100%;}
   .modal-footer{flex-wrap:wrap;}
+}
+
+html{overscroll-behavior-y:none;}
+@media(display-mode:standalone){body{user-select:none;-webkit-user-select:none;}input,textarea{user-select:text;-webkit-user-select:text;}}
+/* ===== Mobile app shell: bottom tab bar, compact top bar, sheets ===== */
+.bottom-nav{display:none;}
+.bn-more{background:none;border:none;}
+.btn-alert{width:100%;margin:10px 0 0;}
+@media(max-width:900px){
+  #app.active ~ .bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--white);border-top:1px solid var(--border);padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(15,23,42,.07);}
+  .bottom-nav .nav-item,.bottom-nav .bn-more{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;margin:0;font-size:11px;font-weight:600;border-radius:12px;position:relative;color:var(--text-secondary);}
+  .bottom-nav i{font-size:18px;width:auto;}
+  .bottom-nav .nav-item.active{background:var(--light-blue);color:var(--primary);}
+  .bn-badge{position:absolute;top:1px;left:calc(50% + 4px);min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--white);}
+  .content{padding-bottom:calc(88px + env(safe-area-inset-bottom));}
+  .topbar{flex-wrap:wrap;row-gap:10px;}
+  .page-title{display:block;flex:1;font-size:17px;}
+  .search-box{order:5;flex:1 1 100%;max-width:none;margin:0;}
+  .topbar-right{margin-left:0;gap:10px;}
+  .hamburger{width:38px;height:38px;border-radius:10px;}
+  .sidebar{width:min(86vw,300px);padding-top:env(safe-area-inset-top);}
+  .notif-dropdown{position:fixed;top:calc(64px + env(safe-area-inset-top));left:10px;right:10px;width:auto;max-height:70vh;}
+  .icon-action{width:38px;height:38px;font-size:14px;}
+  .row-actions{gap:8px;}
+  .status-tab{padding:9px 14px;}
+  #toast-container{top:max(12px, env(safe-area-inset-top));}
+}
+@media(max-width:760px){
+  tbody tr{box-shadow:var(--shadow-sm);margin:10px 0;}
+  .table-wrap{padding:0 12px;}
+  .pagination{justify-content:center;}
+}
+
+/* ==========================================================================
+   RESPONSIVE FIXES v2  (root cause of the right-side overflow + tiny text:
+   flex/grid children had min-width:auto, so wide tables/charts stretched the
+   whole page and the phone browser zoomed out to fit it)
+   ========================================================================== */
+html,body{max-width:100%;overflow-x:hidden;}
+#app.active{width:100%;max-width:100%;}
+.main{min-width:0;max-width:100%;}
+.content,.page,.card,.card-body,.dashboard-grid>*,.settings-grid>*,.stats-grid>*,.topbar>*{min-width:0;max-width:100%;}
+.card{overflow:hidden;}
+canvas{max-width:100% !important;}
+.stat-value,.detail-item .v,.cell-main,.cell-sub{overflow-wrap:anywhere;}
+.coupon-row{flex-wrap:wrap;}
+.field input,.field select,.field textarea{max-width:100%;min-width:0;}
+.modal{min-width:0;}
+.modal-body{overflow-x:hidden;}
+tbody td[colspan]{display:block;text-align:center;}
+tbody td[colspan]::before{display:none;}
+
+@media(max-width:900px){
+  .content{padding:14px 12px calc(92px + env(safe-area-inset-bottom));}
+  .topbar{padding:10px 12px;padding-top:max(10px, env(safe-area-inset-top));gap:10px;row-gap:8px;}
+  .page-title{font-size:17px;font-weight:800;}
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .dashboard-grid{gap:12px;margin-bottom:12px;}
+  .card-header{padding:14px;}
+  .card-header h3{font-size:14.5px;}
+  .chart-tabs{width:100%;}
+  .chart-tab{flex:1;white-space:nowrap;padding:8px 6px;}
+  .toolbar{padding:12px;gap:8px;}
+  .toolbar .search-box{flex:1 1 100%;max-width:none;margin-left:0;}
+  .toolbar .select-input,.toolbar input[type=date]{flex:1 1 calc(50% - 4px);min-width:0;width:auto;}
+  .toolbar .btn{flex:1 1 100%;}
+  #order-status-tabs{padding:10px 12px;}
+  .settings-grid{gap:12px;}
+  #page-settings .field[style*="min-width"]{flex:1 1 100% !important;min-width:0 !important;}
+  #add-coupon-btn{width:100%;}
+  #save-settings-btn{width:100%;}
+  .theme-opt{flex:1 1 calc(50% - 7px);width:auto;}
+  .row-actions .icon-action{width:40px;height:40px;font-size:14px;}
+}
+
+@media(max-width:760px){
+  /* tables become readable cards */
+  tbody td{font-size:13.5px;padding:10px 0;}
+  tbody td .cell-sub,.cell-sub{font-size:12.5px;}
+  tbody td::before{font-size:12px;}
+  .prod-cell{text-align:left;min-width:0;}
+  .detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .modal-body{padding:16px;}
+  .form-grid{grid-template-columns:1fr;}
+  #customer-msg-text{min-height:220px;}
+  .empty-state{padding:36px 16px;}
+}
+
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:minmax(0,1fr);}
+  .bottom-nav .nav-item,.bottom-nav .bn-more{font-size:10px;}
+  .detail-grid{grid-template-columns:minmax(0,1fr);}
+}
+
+/* ===== Compact list rows (Orders + Products) + copy buttons ===== */
+table.compact-table{min-width:0;}
+table.compact-table tbody td{padding:11px 14px;}
+table.compact-table td.col-status{white-space:nowrap;width:1%;}
+table.compact-table td.col-actions{width:1%;white-space:nowrap;}
+table.compact-table td.col-actions .row-actions{justify-content:flex-end;}
+.copy-btn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--white);color:var(--text-secondary);font-size:11.5px;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.copy-btn:hover{color:var(--primary);border-color:var(--primary);}
+.copy-btn.done{color:var(--success);border-color:var(--success);}
+.detail-item.has-copy{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.detail-item.has-copy > div:first-child{min-width:0;flex:1;}
+.d-section-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin:4px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.order-item-card{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:var(--white);}
+.order-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-size:12.5px;font-weight:800;color:var(--primary-dark);}
+.order-item-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.order-item-grid .detail-item{margin:0;padding:10px 12px;}
+.cell-name-row{display:flex;align-items:center;gap:10px;min-width:0;}
+@media(max-width:760px){
+  table.compact-table tbody tr{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+  table.compact-table tbody td{display:block;border-bottom:none;padding:0;text-align:left;width:auto;}
+  table.compact-table tbody td::before{display:none;}
+  table.compact-table tbody td.col-main{flex:1;min-width:0;}
+  table.compact-table tbody td.col-status{flex:0 0 auto;width:auto;}
+  table.compact-table tbody td.col-actions{flex:0 0 auto;width:auto;}
+  table.compact-table .row-actions{gap:5px;}
+  table.compact-table .row-actions .icon-action{width:34px;height:34px;font-size:13px;}
+  table.compact-table .badge{font-size:10.5px;padding:3px 8px;}
+  .order-item-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:520px){
+  table.compact-table tbody tr{flex-wrap:wrap;}
+  table.compact-table tbody td.col-main{flex:1 1 100%;}
+  table.compact-table tbody td.col-status{flex:1 1 auto;}
 }
 </style>
 </head>
@@ -969,6 +1101,7 @@ img{max-width:100%;}
         </div>
       </div>
       <a href="index.html" target="_blank" rel="noopener" class="logout-btn" style="color:var(--primary);text-decoration:none;margin-bottom:8px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Store</a>
+      <button class="logout-btn" id="install-btn" style="display:none;color:var(--primary);margin-bottom:8px;"><i class="fa-solid fa-download"></i> Install app</button>
       <button class="logout-btn" id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
     </div>
   </aside>
@@ -1064,9 +1197,9 @@ img{max-width:100%;}
             <button class="btn btn-primary" id="add-product-btn"><i class="fa-solid fa-plus"></i> Add Product</button>
           </div>
           <div class="table-wrap">
-            <table>
+            <table class="compact-table">
               <thead><tr>
-                <th>Product</th><th>Category</th><th>Price</th><th>Discount</th><th>Stock</th><th>Status</th><th>Actions</th>
+                <th>Product</th><th>Status</th><th>Actions</th>
               </tr></thead>
               <tbody id="products-body"></tbody>
             </table>
@@ -1089,9 +1222,9 @@ img{max-width:100%;}
             <input type="date" class="select-input" id="order-date-filter">
           </div>
           <div class="table-wrap">
-            <table>
+            <table class="compact-table">
               <thead><tr>
-                <th>Order ID</th><th>Customer</th><th>Phone</th><th>Product</th><th>Qty</th><th>Total</th><th>Payment</th><th>Date</th><th>Status</th><th>Actions</th>
+                <th>Customer</th><th>Status</th><th>Actions</th>
               </tr></thead>
               <tbody id="orders-body"></tbody>
             </table>
@@ -1117,9 +1250,9 @@ img{max-width:100%;}
             </select>
           </div>
           <div class="table-wrap">
-            <table>
+            <table class="compact-table">
               <thead><tr>
-                <th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Last Order</th><th>Status</th><th>Actions</th>
+                <th>Customer</th><th>Status</th><th>Actions</th>
               </tr></thead>
               <tbody id="customers-body"></tbody>
             </table>
@@ -1278,6 +1411,7 @@ img{max-width:100%;}
         </div>
 
         <div style="display:flex;justify-content:flex-end;margin-top:18px;">
+          <button class="btn btn-secondary" id="migrate-drive-btn" type="button" style="margin-right:8px;"><i class="fa-brands fa-google-drive"></i> Move old images to Drive</button>
           <button class="btn btn-primary" id="save-settings-btn"><i class="fa-solid fa-check"></i> Save Changes</button>
         </div>
       </section>
@@ -1387,6 +1521,7 @@ img{max-width:100%;}
     </div>
     <div class="modal-body" id="view-product-body"></div>
     <div class="modal-footer">
+      <button class="btn btn-primary" id="copy-product-all-btn"><i class="fa-regular fa-copy"></i> Copy All</button>
       <button class="btn btn-secondary" data-close="view-product-modal-overlay">Close</button>
     </div>
   </div>
@@ -1401,6 +1536,7 @@ img{max-width:100%;}
     </div>
     <div class="modal-body" id="customer-detail-body"></div>
     <div class="modal-footer">
+      <button class="btn btn-primary" id="copy-customer-all-btn"><i class="fa-regular fa-copy"></i> Copy All</button>
       <button class="btn btn-secondary" data-close="customer-modal-overlay">Close</button>
     </div>
   </div>
@@ -1442,6 +1578,7 @@ img{max-width:100%;}
     </div>
     <div class="modal-body" id="order-detail-body"></div>
     <div class="modal-footer">
+      <button class="btn btn-primary" id="copy-order-all-btn"><i class="fa-regular fa-copy"></i> Copy All</button>
       <button class="btn btn-secondary" data-close="order-detail-modal-overlay">Close</button>
     </div>
   </div>
@@ -1488,6 +1625,13 @@ img{max-width:100%;}
 
 <div id="toast-container"></div>
 
+<nav class="bottom-nav" aria-label="Main">
+  <a href="#" class="nav-item" data-page="dashboard"><i class="fa-solid fa-grid-2"></i><span>Home</span></a>
+  <a href="#" class="nav-item" data-page="orders"><i class="fa-solid fa-cart-shopping"></i><span>Orders</span><b class="bn-badge" id="bn-orders-badge"></b></a>
+  <a href="#" class="nav-item" data-page="products"><i class="fa-solid fa-box-open"></i><span>Products</span></a>
+  <a href="#" class="nav-item" data-page="customers"><i class="fa-solid fa-users"></i><span>Customers</span></a>
+  <button type="button" class="bn-more" id="bottom-more"><i class="fa-solid fa-ellipsis"></i><span>More</span></button>
+</nav>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
@@ -1777,6 +1921,30 @@ const CouponService = {
 };
 
 /* ==========================================================================
+   ALERT SERVICE — sound + vibration while the admin page is open.
+   New-order e-mails are sent by the Cloud Function in /functions.
+   ========================================================================== */
+const PushService = (function(){
+  let ctx = null;
+  function unlock(){ try{ ctx = ctx || new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state === 'suspended') ctx.resume(); }catch(e){} }
+  document.addEventListener('click', unlock, { once:true });
+  function alert(){
+    if(ctx){
+      [0, .18].forEach((t, i)=>{
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = i ? 1175 : 880; o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(.0001, ctx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(.25, ctx.currentTime + t + .02);
+        g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + t + .16);
+        o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .18);
+      });
+    }
+    try{ navigator.vibrate && navigator.vibrate([200,100,200]); }catch(e){}
+  }
+  return { alert, init(){} };
+})();
+
+/* ==========================================================================
    NOTIFICATION SERVICE (live order notifications for admin)
    ========================================================================== */
 const NotificationService = (function(){
@@ -1798,6 +1966,8 @@ const NotificationService = (function(){
   function updateBellDot(){
     const dot = document.getElementById('notif-dot');
     if(dot) dot.style.display = unreadCount() > 0 ? 'block' : 'none';
+    const bb = document.getElementById('bn-orders-badge');
+    if(bb){ const n = unreadCount(); bb.textContent = n > 9 ? '9+' : n; bb.style.display = n ? 'flex' : 'none'; }
   }
 
   function renderDropdown(){
@@ -1849,6 +2019,7 @@ const NotificationService = (function(){
       newOnes.forEach(o=>{
         addNotification('New order from ' + o.customer + ' — ' + o.product, o.id);
         showToast('New order received from ' + o.customer + '!', 'success');
+        PushService.alert(o);
         knownOrderIds.add(o.id);
       });
       if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
@@ -1977,7 +2148,7 @@ function escapeHtml(str){
 /* ==========================================================================
    IMAGE COMPRESSION
    Resizes + re-encodes an uploaded image on a <canvas> before it's turned
-   into a base64 string, so records stored in Firebase stay small.
+   into a small JPEG that is then uploaded to Google Drive.
    ========================================================================== */
 function compressImage(file, maxDim, quality){
   maxDim = maxDim || 900;
@@ -2020,6 +2191,83 @@ function compressImage(file, maxDim, quality){
 }
 
 /* ==========================================================================
+   GOOGLE DRIVE IMAGE STORAGE
+   Images are resized in the browser, uploaded to a Google Drive folder through
+   a Google Apps Script web app, and ONLY the short image link is saved in
+   Firebase (no more base64 text in the database).
+   Setup guide: see the Bangla guide; paste the two values below.
+   ========================================================================== */
+const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxLIgYRfRfSfw-NlML_3IJg2KMmUVgBoDlYzk3_yolSgiV1AXhn4NcTdpzjqPTK4bIA4g/exec';
+const DRIVE_UPLOAD_KEY = 'ibrahim2812003khalil';
+
+function isDataImage(v){ return typeof v === 'string' && v.indexOf('data:image') === 0; }
+
+async function uploadDataUrlToDrive(dataUrl, name){
+  if(!DRIVE_UPLOAD_URL || DRIVE_UPLOAD_URL.indexOf('PASTE_') === 0){
+    throw new Error('Google Drive setup is not done yet (see guide)');
+  }
+  const res = await fetch(DRIVE_UPLOAD_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },   /* avoids CORS preflight */
+    body: JSON.stringify({ key: DRIVE_UPLOAD_KEY, name: name || 'image', mime: 'image/jpeg', data: dataUrl.split(',')[1] })
+  });
+  const j = await res.json();
+  if(!j || !j.ok) throw new Error((j && j.error) || 'Upload failed');
+  return j.url;
+}
+
+/* resize -> upload -> { url (saved in database), local (instant preview) } */
+function uploadImage(file, maxDim, quality){
+  showToast('Uploading image to Google Drive...','warning');
+  return compressImage(file, maxDim, quality).then((local)=>{
+    const base = ((file.name || 'image').replace(/\.[^.]+$/, '') || 'image').slice(0, 40);
+    return uploadDataUrlToDrive(local, base).then((url)=>{
+      showToast('Image uploaded to Google Drive','success');
+      return { url, local };
+    });
+  });
+}
+
+/* One-click: move every existing base64 image (products, variants, logo) to Drive */
+async function migrateImagesToDrive(){
+  const list = JSON.parse(JSON.stringify(ProductService.getProducts() || []));
+  const settings = JSON.parse(JSON.stringify(SettingsService.getSettings() || {}));
+  const seen = {};
+  let todo = 0, done = 0;
+  const count = (v)=>{ if(isDataImage(v)) todo++; };
+  list.forEach(p=>{ count(p.image); (p.images||[]).forEach(count); (p.variants||[]).forEach(v=>count(v.image)); });
+  count(settings.storeLogo);
+  if(!todo){ showToast('No base64 images found - everything is already on Drive','success'); return; }
+  if(!confirm(todo + ' image(s) will be moved to Google Drive. Continue?')) return;
+  const btn = document.getElementById('migrate-drive-btn');
+  const label = btn.innerHTML; btn.disabled = true;
+  const conv = async (v, tag)=>{
+    if(!isDataImage(v)) return v;
+    if(!seen[v]) seen[v] = await uploadDataUrlToDrive(v, tag);
+    done++; btn.textContent = 'Uploading ' + done + '/' + todo + '...';
+    return seen[v];
+  };
+  try{
+    for(const p of list){
+      const tag = (p.name || 'product').slice(0, 30);
+      p.image = await conv(p.image, tag);
+      if(Array.isArray(p.images)) for(let i = 0; i < p.images.length; i++) p.images[i] = await conv(p.images[i], tag);
+      if(Array.isArray(p.variants)) for(const v of p.variants) v.image = await conv(v.image, tag + '-' + (v.sku || 'v'));
+    }
+    settings.storeLogo = await conv(settings.storeLogo, 'logo');
+    showToast('All images moved to Google Drive','success');
+  }catch(err){
+    showToast('Stopped: ' + err.message,'error');
+  }finally{
+    ProductService.saveProducts(list);          /* saves whatever finished */
+    SettingsService.saveSettings(settings);
+    settingsLogoData = settings.storeLogo || '';
+    btn.innerHTML = label; btn.disabled = false;
+    if(typeof renderProducts === 'function') renderProducts();
+  }
+}
+
+/* ==========================================================================
    NAVIGATION
    ========================================================================== */
 const pageTitles = {
@@ -2059,6 +2307,7 @@ function closeSidebarMobile(){ sidebar.classList.remove('open'); sidebarOverlay.
 document.getElementById('hamburger-btn').addEventListener('click', openSidebarMobile);
 document.getElementById('sidebar-close').addEventListener('click', closeSidebarMobile);
 sidebarOverlay.addEventListener('click', closeSidebarMobile);
+document.getElementById('bottom-more').addEventListener('click', openSidebarMobile);
 
 /* ==========================================================================
    DASHBOARD FUNCTIONS
@@ -2227,7 +2476,7 @@ function renderSalesChart(days, orders){
       },
       scales:{
         x:{ grid:{ display:false }, ticks:{ font:{family:'Inter',size:11}, color:'#64748B' } },
-        y:{ position:'left', grid:{ color:'#F1F5F9' }, ticks:{ font:{family:'Inter',size:11}, color:'#64748B', callback:v=>'$'+v } },
+        y:{ position:'left', grid:{ color:'#F1F5F9' }, ticks:{ font:{family:'Inter',size:11}, color:'#64748B', callback:v=>'৳'+v } },
         y1:{ position:'right', grid:{ display:false }, ticks:{ font:{family:'Inter',size:11}, color:'#64748B', precision:0 } }
       }
     }
@@ -2274,21 +2523,17 @@ function renderProducts(){
 
   body.innerHTML = products.map(p=>`
     <tr>
-      <td>
+      <td class="col-main">
         <div class="prod-cell">
           ${p.image ? `<img class="prod-thumb" src="${p.image}">` : `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;color:#CBD5E1;"><i class="fa-solid fa-image"></i></div>`}
-          <div>
+          <div style="min-width:0;">
             <div class="cell-main">${escapeHtml(p.name)}</div>
-            <div class="cell-sub">${p.id}${(p.variants && p.variants.length > 0) ? ` · ${p.variants.length} design${p.variants.length>1?'s':''}` : ''}</div>
+            <div class="cell-sub">${p.id}</div>
           </div>
         </div>
       </td>
-      <td>${escapeHtml(p.category)}</td>
-      <td class="cell-main">${fmtMoney(p.price)}</td>
-      <td>${p.discount ? fmtMoney(p.discount) : '—'}</td>
-      <td><span class="badge ${stockStatus(p.stock)}"><span class="badge-dot"></span>${p.stock} · ${stockLabel(p.stock)}</span></td>
-      <td><span class="badge ${p.status}"><span class="badge-dot"></span>${p.status==='active'?'Active':'Inactive'}</span></td>
-      <td>
+      <td class="col-status"><span class="badge ${p.status}"><span class="badge-dot"></span>${p.status==='active'?'Active':'Inactive'}</span></td>
+      <td class="col-actions">
         <div class="row-actions">
           <button class="icon-action view" data-action="view" data-id="${p.id}" title="View"><i class="fa-solid fa-eye"></i></button>
           <button class="icon-action edit" data-action="edit" data-id="${p.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
@@ -2314,6 +2559,16 @@ function renderProducts(){
   });
 }
 
+document.getElementById('copy-product-all-btn').addEventListener('click', ()=>{
+  const p = window.__currentDetailProduct; if(!p) return;
+  const L = ['Product: ' + p.name, 'Product ID: ' + p.id, 'Category: ' + (p.category||'—'), 'Price: ' + fmtMoney(p.price)];
+  if(p.discount) L.push('Discount: ' + fmtMoney(p.discount));
+  L.push('Stock: ' + p.stock, 'Status: ' + p.status);
+  if(Array.isArray(p.sizes) && p.sizes.length) L.push('Sizes: ' + p.sizes.join(', '));
+  if(p.variants && p.variants.length) L.push('SKUs: ' + p.variants.map(v=>v.sku).join(', '));
+  L.push('Buy link: ' + generateBuyUrl(p.id));
+  copyText(L.join('\n')).then(()=> showToast('Product details copied','success')).catch(()=> showToast('Could not copy','error'));
+});
 document.getElementById('product-search').addEventListener('input', (e)=>{ productFilters.search = e.target.value; renderProducts(); });
 document.getElementById('product-category-filter').addEventListener('change', (e)=>{ productFilters.category = e.target.value; renderProducts(); });
 document.getElementById('product-stock-filter').addEventListener('change', (e)=>{ productFilters.stock = e.target.value; renderProducts(); });
@@ -2331,12 +2586,14 @@ function viewProduct(id){
       ${gallery.map(img=>`<img src="${img}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">`).join('')}
     </div>` : '<div style="margin-bottom:16px;"></div>'}
     <div class="detail-grid">
-      <div class="detail-item"><div class="l">Name</div><div class="v">${escapeHtml(p.name)}</div></div>
-      <div class="detail-item"><div class="l">Category</div><div class="v">${escapeHtml(p.category)}</div></div>
-      <div class="detail-item"><div class="l">Price</div><div class="v">${fmtMoney(p.price)}</div></div>
-      <div class="detail-item"><div class="l">Discount</div><div class="v">${p.discount?fmtMoney(p.discount):'—'}</div></div>
-      <div class="detail-item"><div class="l">Stock</div><div class="v">${p.stock}</div></div>
-      <div class="detail-item"><div class="l">Status</div><div class="v">${p.status}</div></div>
+      ${dItem('Product ID', p.id)}
+      ${dItem('Name', p.name)}
+      ${dItem('Category', p.category || '')}
+      ${dItem('Price', fmtMoney(p.price))}
+      ${dItem('Discount', p.discount ? fmtMoney(p.discount) : '', p.discount ? fmtMoney(p.discount) : '')}
+      ${dItem('Stock', String(p.stock))}
+      ${dItem('Status', p.status)}
+      ${(Array.isArray(p.sizes) && p.sizes.length) ? dItem('Sizes', p.sizes.join(', ')) : ''}
     </div>
     <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">${escapeHtml(p.description||'No description provided.')}</p>
     ${(p.variants && p.variants.length > 0) ? `
@@ -2352,6 +2609,7 @@ function viewProduct(id){
               <div style="font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.03em;">Variant ${i+1}</div>
               <div style="font-size:13px;font-weight:700;">SKU: ${escapeHtml(v.sku)}</div>
             </div>
+            ${copyBtn(v.sku, 'Copy SKU')}
           </div>
         `).join('')}
       </div>
@@ -2360,13 +2618,15 @@ function viewProduct(id){
     <div class="field">
       <label>Buy Now Link (customer storefront page)</label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" readonly value="${escapeHtml(generateBuyUrl(p.id))}" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:12.5px;color:var(--text-secondary);">
+        <input type="text" readonly value="${escapeHtml(generateBuyUrl(p.id))}" style="flex:1;min-width:0;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:12.5px;color:var(--text-secondary);">
+        ${copyBtn(generateBuyUrl(p.id), 'Copy link')}
         <a href="${escapeHtml(generateBuyUrl(p.id))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="flex-shrink:0;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a>
       </div>
       <p style="font-size:11.5px;color:var(--text-secondary);margin-top:6px;">Opening this link shows the product like a real store page with a Buy Now button. Orders placed there land in your Orders section for confirmation.</p>
     </div>
 
   `;
+  window.__currentDetailProduct = p;
   openModal('view-product-modal-overlay');
 }
 
@@ -2478,13 +2738,13 @@ function renderVariantList(){
 document.getElementById('variant-image-input').addEventListener('change', function(e){
   const file = e.target.files[0];
   if(!file) return;
-  compressImage(file, 700, 0.7).then((dataUrl)=>{
-    pendingVariantImage = dataUrl;
+  uploadImage(file, 700, 0.7).then((r)=>{
+    pendingVariantImage = r.url;
     const img = document.getElementById('variant-image-preview');
-    img.src = pendingVariantImage; img.style.display='block';
+    img.src = r.local; img.style.display='block';
     document.getElementById('variant-image-icon').style.display='none';
-  }).catch(()=>{
-    showToast('Could not process that image','error');
+  }).catch((err)=>{
+    showToast('Image upload failed: ' + err.message,'error');
   });
 });
 
@@ -2507,12 +2767,12 @@ document.getElementById('add-variant-btn').addEventListener('click', ()=>{
 document.getElementById('product-image-input').addEventListener('change', function(e){
   const file = e.target.files[0];
   if(!file) return;
-  compressImage(file, 1000, 0.7).then((dataUrl)=>{
-    productImages.push(dataUrl);
+  uploadImage(file, 1000, 0.7).then((r)=>{
+    productImages.push(r.url);
     renderProductImagesList();
     document.getElementById('product-image-input').value = '';
-  }).catch(()=>{
-    showToast('Could not process that image','error');
+  }).catch((err)=>{
+    showToast('Image upload failed: ' + err.message,'error');
     document.getElementById('product-image-input').value = '';
   });
 });
@@ -2626,16 +2886,12 @@ function renderOrders(){
 
   body.innerHTML = orders.map(o=>`
     <tr>
-      <td class="cell-main">${o.id}${o.trackingId ? `<div class="cell-sub">${o.trackingId}</div>` : ''}</td>
-      <td>${escapeHtml(o.customer)}</td>
-      <td class="cell-sub">${escapeHtml(o.phone)}</td>
-      <td>${escapeHtml(o.product)}</td>
-      <td>${o.quantity}</td>
-      <td class="cell-main">${fmtMoney(o.total)}</td>
-      <td class="cell-sub">${escapeHtml(o.payment)}</td>
-      <td class="cell-sub">${fmtDate(o.date)}</td>
-      <td>${statusBadge(o.status)}</td>
-      <td>
+      <td class="col-main">
+        <div class="cell-main">${escapeHtml(o.customer)}</div>
+        <div class="cell-sub">${o.id}</div>
+      </td>
+      <td class="col-status">${statusBadge(o.status)}</td>
+      <td class="col-actions">
         <div class="row-actions">
           <button class="icon-action view" data-action="view" data-id="${o.id}" title="View Details"><i class="fa-solid fa-eye"></i></button>
           <button class="icon-action edit" data-action="status" data-id="${o.id}" title="Update Status"><i class="fa-solid fa-pen"></i></button>
@@ -2659,6 +2915,83 @@ function renderOrders(){
   });
 }
 
+
+/* ---------- copy helpers ---------- */
+function copyBtn(text, title){
+  return `<button type="button" class="copy-btn" data-copy="${encodeURIComponent(text==null?'':String(text))}" title="${title||'Copy'}"><i class="fa-regular fa-copy"></i></button>`;
+}
+function dItem(label, value, copyValue, opts){
+  opts = opts || {};
+  const raw = copyValue === undefined ? value : copyValue;
+  const shown = opts.html ? value : escapeHtml(value == null || value === '' ? '—' : value);
+  const canCopy = raw !== '' && raw != null && raw !== '—';
+  return `<div class="detail-item ${canCopy?'has-copy':''}"><div><div class="l">${label}</div><div class="v" ${opts.small?'style="font-size:12.5px;"':''}>${shown}</div></div>${canCopy ? copyBtn(raw, 'Copy '+label) : ''}</div>`;
+}
+document.addEventListener('click', (e)=>{
+  const b = e.target.closest('.copy-btn');
+  if(!b) return;
+  const text = decodeURIComponent(b.dataset.copy || '');
+  copyText(text).then(()=>{
+    b.classList.add('done'); b.innerHTML = '<i class="fa-solid fa-check"></i>';
+    setTimeout(()=>{ b.classList.remove('done'); b.innerHTML = '<i class="fa-regular fa-copy"></i>'; }, 1200);
+    showToast('Copied','success');
+  }).catch(()=> showToast('Could not copy','error'));
+});
+
+/* Splits an order into separate items: product, SKU, size, quantity */
+function parseOrderItems(o){
+  let baseName = o.product || '';
+  if(o.variantSku && baseName.endsWith(' (' + o.variantSku + ')')){
+    baseName = baseName.slice(0, baseName.length - o.variantSku.length - 3);
+  }
+  if(!o.variantSku){
+    return [{ product: baseName, sku:'', size:'', qty: o.quantity }];
+  }
+  const allSkus = new Set();
+  ProductService.getProducts().forEach(p=> (p.variants||[]).forEach(v=> allSkus.add(String(v.sku).toLowerCase())));
+  const orderSizes = new Set((Array.isArray(o.sizes) ? o.sizes : Object.values(o.sizes||{})).filter(Boolean).map(x=>String(x).toLowerCase()));
+  const sizeLike = /^(xxs|xs|s|m|l|xl|xxl|xxxl|\d{1,3})$/i;
+  return o.variantSku.split(', ').map(chunk=>{
+    const m = chunk.match(/^(.*) x(\d+)$/);
+    const label = m ? m[1] : chunk;
+    const qty = m ? Number(m[2]) : 1;
+    const parts = label.split(' / ');
+    let sku = '', size = '';
+    parts.forEach((part, idx)=>{
+      const low = part.toLowerCase();
+      if(allSkus.has(low)) sku = part;
+      else if(orderSizes.has(low) || sizeLike.test(part)) size = part;
+      else if(parts.length === 2) { if(idx===0) sku = part; else size = part; }
+      else sku = part;
+    });
+    return { product: baseName, sku, size, qty };
+  });
+}
+
+function buildOrderCopyText(o){
+  const items = parseOrderItems(o);
+  const addr = o.deliveryAddress || [o.thana,o.district].filter(Boolean).join(', ');
+  const L = [];
+  L.push('Order ID: ' + o.id);
+  L.push('Customer: ' + o.customer);
+  if(o.phone) L.push('Phone: ' + o.phone);
+  if(addr) L.push('Address: ' + addr);
+  L.push('');
+  items.forEach((it, i)=>{
+    L.push('Item ' + (i+1) + ':');
+    L.push('  Product: ' + it.product);
+    if(it.sku) L.push('  SKU: ' + it.sku);
+    if(it.size) L.push('  Size: ' + it.size);
+    L.push('  Quantity: ' + it.qty);
+  });
+  L.push('');
+  L.push('Total Quantity: ' + o.quantity);
+  L.push('Total: ' + fmtMoney(o.total));
+  if(Number(o.dueAmount) > 0) L.push('Due on Delivery: ' + fmtMoney(o.dueAmount));
+  L.push('Payment: ' + (o.payment||'—'));
+  return L.join('\n');
+}
+
 function viewOrderDetail(o){
   const paymentRows = [];
   if(o.advancePaid != null){
@@ -2670,35 +3003,57 @@ function viewOrderDetail(o){
   if(o.couponCode){
     paymentRows.push(`<div class="detail-item"><div class="l">Coupon Used</div><div class="v">${escapeHtml(o.couponCode)} (-${fmtMoney(o.couponDiscount||0)})</div></div>`);
   }
+  const items = parseOrderItems(o);
+  const addr = o.deliveryAddress || [o.thana,o.district].filter(Boolean).join(', ');
   document.getElementById('order-detail-body').innerHTML = `
     <div class="detail-grid">
-      <div class="detail-item"><div class="l">Order ID</div><div class="v">${o.id}</div></div>
-      <div class="detail-item"><div class="l">Tracking ID</div><div class="v">${o.trackingId || '—'}</div></div>
+      ${dItem('Order ID', o.id)}
+      ${dItem('Tracking ID', o.trackingId || '')}
       <div class="detail-item"><div class="l">Status</div><div class="v">${statusBadge(o.status)}</div></div>
       <div class="detail-item"><div class="l">Date</div><div class="v">${fmtDate(o.date)}</div></div>
     </div>
     <div class="detail-grid">
-      <div class="detail-item"><div class="l">Customer Name</div><div class="v">${escapeHtml(o.customer)}</div></div>
-      <div class="detail-item"><div class="l">Phone Number</div><div class="v">${escapeHtml(o.phone||'—')}</div></div>
-      <div class="detail-item"><div class="l">Email</div><div class="v" style="font-size:12.5px;">${escapeHtml(o.email||'—')}</div></div>
-      <div class="detail-item"><div class="l">Quantity</div><div class="v">${o.quantity}</div></div>
+      ${dItem('Customer Name', o.customer)}
+      ${dItem('Phone Number', o.phone || '')}
+      ${dItem('Email', o.email || '', undefined, {small:true})}
     </div>
-    <div class="detail-item" style="margin-bottom:12px;"><div class="l">Product</div><div class="v" style="font-size:13px;">${escapeHtml(o.product)}</div></div>
-    <div class="detail-item" style="margin-bottom:12px;"><div class="l">Delivery Address</div><div class="v" style="font-size:13px;">${escapeHtml(o.deliveryAddress || [o.thana,o.district].filter(Boolean).join(', ') || '—')}</div></div>
+    <div class="detail-item has-copy" style="margin-bottom:16px;"><div><div class="l">Delivery Address</div><div class="v" style="font-size:13px;">${escapeHtml(addr || '—')}</div></div>${addr ? copyBtn(addr,'Copy address') : ''}</div>
+
+    <div class="d-section-title"><span>Order Items (${items.length})</span></div>
+    ${items.map((it,i)=>`
+      <div class="order-item-card">
+        <div class="order-item-head"><span>Item ${i+1}</span>${copyBtn([it.product, it.sku?('SKU: '+it.sku):'', it.size?('Size: '+it.size):'', 'Quantity: '+it.qty].filter(Boolean).join('\n'), 'Copy this item')}</div>
+        <div style="margin-bottom:10px;">${dItem('Product', it.product)}</div>
+        <div class="order-item-grid">
+          ${dItem('SKU', it.sku || '')}
+          ${dItem('Size', it.size || '')}
+          ${dItem('Quantity', String(it.qty))}
+        </div>
+      </div>
+    `).join('')}
     <div class="detail-grid">
-      <div class="detail-item"><div class="l">Payment Method</div><div class="v" style="font-size:12.5px;">${escapeHtml(o.payment||'—')}</div></div>
-      <div class="detail-item"><div class="l">Total Amount</div><div class="v">${fmtMoney(o.total)}</div></div>
-      ${paymentRows.join('')}
+      ${dItem('Total Quantity', String(o.quantity))}
+      ${dItem('Total Amount', fmtMoney(o.total))}
     </div>
-    ${(o.bkashNumber || o.bkashTxn) ? `
+
+    <div class="d-section-title"><span>Payment</span></div>
     <div class="detail-grid">
-      <div class="detail-item"><div class="l">bKash Number</div><div class="v" style="font-size:12.5px;">${escapeHtml(o.bkashNumber||'—')}</div></div>
-      <div class="detail-item"><div class="l">Transaction ID</div><div class="v" style="font-size:12.5px;">${escapeHtml(o.bkashTxn||'—')}</div></div>
-    </div>` : ''}
+      ${dItem('Payment Method', o.payment || '', undefined, {small:true})}
+      ${o.advancePaid != null ? dItem('Advance Paid', fmtMoney(o.advancePaid)) : ''}
+      ${(o.dueAmount != null && o.dueAmount > 0) ? dItem('Due on Delivery', fmtMoney(o.dueAmount)) : ''}
+      ${o.couponCode ? dItem('Coupon Used', o.couponCode + ' (-' + fmtMoney(o.couponDiscount||0) + ')') : ''}
+      ${o.bkashNumber ? dItem('bKash Number', o.bkashNumber, undefined, {small:true}) : ''}
+      ${o.bkashTxn ? dItem('Transaction ID', o.bkashTxn, undefined, {small:true}) : ''}
+    </div>
   `;
+  window.__currentDetailOrder = o;
   openModal('order-detail-modal-overlay');
 }
 
+document.getElementById('copy-order-all-btn').addEventListener('click', ()=>{
+  const o = window.__currentDetailOrder; if(!o) return;
+  copyText(buildOrderCopyText(o)).then(()=> showToast('Order details copied','success')).catch(()=> showToast('Could not copy','error'));
+});
 document.getElementById('order-search').addEventListener('input', e=>{ orderFilters.search=e.target.value; renderOrders(); });
 document.getElementById('order-date-filter').addEventListener('change', e=>{ orderFilters.date=e.target.value; renderOrders(); });
 
@@ -2816,19 +3171,17 @@ function renderCustomers(){
 
   body.innerHTML = customers.map(c=>`
     <tr>
-      <td>
+      <td class="col-main">
         <div class="prod-cell">
-          <div class="avatar" style="width:32px;height:32px;font-size:12px;">${initials(c.name)}</div>
-          <div class="cell-main">${escapeHtml(c.name)}</div>
+          <div class="avatar" style="width:32px;height:32px;font-size:12px;flex-shrink:0;">${initials(c.name)}</div>
+          <div style="min-width:0;">
+            <div class="cell-main">${escapeHtml(c.name)}</div>
+            <div class="cell-sub">${escapeHtml(c.phone || '')}</div>
+          </div>
         </div>
       </td>
-      <td class="cell-sub">${escapeHtml(c.phone)}</td>
-      <td class="cell-sub">${escapeHtml(c.email)}</td>
-      <td>${c.orders}</td>
-      <td class="cell-main">${fmtMoney(c.totalSpent)}</td>
-      <td class="cell-sub">${fmtDate(c.lastOrder)}</td>
-      <td><span class="badge ${c.status}"><span class="badge-dot"></span>${c.status==='active'?'Active':'Inactive'}</span></td>
-      <td><div class="row-actions"><button class="icon-action view" data-id="${c.id}" title="View"><i class="fa-solid fa-eye"></i></button></div></td>
+      <td class="col-status"><span class="badge ${c.status}"><span class="badge-dot"></span>${c.status==='active'?'Active':'Inactive'}</span></td>
+      <td class="col-actions"><div class="row-actions"><button class="icon-action view" data-id="${c.id}" title="View"><i class="fa-solid fa-eye"></i></button></div></td>
     </tr>
   `).join('');
 
@@ -2844,17 +3197,25 @@ function renderCustomers(){
           </div>
         </div>
         <div class="detail-grid">
-          <div class="detail-item"><div class="l">Phone</div><div class="v">${escapeHtml(c.phone)}</div></div>
-          <div class="detail-item"><div class="l">Orders</div><div class="v">${c.orders}</div></div>
-          <div class="detail-item"><div class="l">Total Spent</div><div class="v">${fmtMoney(c.totalSpent)}</div></div>
-          <div class="detail-item"><div class="l">Last Order</div><div class="v">${fmtDate(c.lastOrder)}</div></div>
+          ${dItem('Customer Name', c.name)}
+          ${dItem('Phone', c.phone || '')}
+          ${dItem('Email', c.email || '', undefined, {small:true})}
+          ${dItem('Orders', String(c.orders))}
+          ${dItem('Total Spent', fmtMoney(c.totalSpent))}
+          ${dItem('Last Order', fmtDate(c.lastOrder))}
           <div class="detail-item"><div class="l">Status</div><div class="v">${c.status}</div></div>
         </div>
       `;
+      window.__currentDetailCustomer = c;
       openModal('customer-modal-overlay');
     });
   });
 }
+document.getElementById('copy-customer-all-btn').addEventListener('click', ()=>{
+  const c = window.__currentDetailCustomer; if(!c) return;
+  const L = ['Customer: ' + c.name, 'Phone: ' + (c.phone||'—'), 'Email: ' + (c.email||'—'), 'Orders: ' + c.orders, 'Total Spent: ' + fmtMoney(c.totalSpent), 'Last Order: ' + fmtDate(c.lastOrder), 'Status: ' + c.status];
+  copyText(L.join('\n')).then(()=> showToast('Customer details copied','success')).catch(()=> showToast('Could not copy','error'));
+});
 document.getElementById('customer-search').addEventListener('input', e=>{ customerFilters.search=e.target.value; renderCustomers(); });
 document.getElementById('customer-status-filter').addEventListener('change', e=>{ customerFilters.status=e.target.value; renderCustomers(); });
 
@@ -2999,16 +3360,17 @@ document.getElementById('add-coupon-btn').addEventListener('click', ()=>{
   document.getElementById('coupon-minorder-input').value = '';
   renderCouponList();
 });
+document.getElementById('migrate-drive-btn').addEventListener('click', migrateImagesToDrive);
 document.getElementById('settings-logo-input').addEventListener('change', function(e){
   const file = e.target.files[0];
   if(!file) return;
-  compressImage(file, 400, 0.75).then((dataUrl)=>{
-    settingsLogoData = dataUrl;
-    document.getElementById('settings-logo-preview').src = settingsLogoData;
+  uploadImage(file, 400, 0.75).then((r)=>{
+    settingsLogoData = r.url;
+    document.getElementById('settings-logo-preview').src = r.local;
     document.getElementById('settings-logo-preview').style.display='block';
     document.getElementById('settings-logo-icon').style.display='none';
-  }).catch(()=>{
-    showToast('Could not process that image','error');
+  }).catch((err)=>{
+    showToast('Image upload failed: ' + err.message,'error');
   });
 });
 document.querySelectorAll('.theme-opt').forEach(opt=>{
@@ -3146,7 +3508,7 @@ function enterApp(){
   const settings = SettingsService.getSettings();
   applyTheme(settings.theme || 'light');
   refreshAdminUI();
-  goToPage('dashboard');
+  goToPage(location.hash === '#orders' ? 'orders' : 'dashboard');
   NotificationService.startPolling();
 
   DataService.onRemoteUpdate = function(key){
@@ -3198,7 +3560,7 @@ async function bootAdmin(){
   }
   seedDemoData();
   hideSkeleton();
-  if(!adminNotifReady){ NotificationService.init(); adminNotifReady = true; }
+  if(!adminNotifReady){ NotificationService.init(); PushService.init(); adminNotifReady = true; }
   enterApp();
 }
 
@@ -3240,6 +3602,23 @@ async function bootAdmin(){
     set.forEach(label);
   });
   document.querySelectorAll('tbody').forEach(function(tb){ label(tb); obs.observe(tb, {childList:true}); });
+})();
+</script>
+<script>
+/* ===== Installable app (PWA) ===== */
+(function(){
+  if('serviceWorker' in navigator && location.protocol !== 'file:'){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+  var btn = document.getElementById('install-btn'), deferred = null;
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if(standalone) return;
+  window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferred = e; btn.style.display = 'flex'; });
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(ios) btn.style.display = 'flex';
+  btn.addEventListener('click', function(){
+    if(deferred){ deferred.prompt(); deferred.userChoice.then(function(){ deferred = null; btn.style.display = 'none'; }); }
+    else if(ios){ showToast('Tap Share, then "Add to Home Screen".', 'warning'); }
+  });
+  window.addEventListener('appinstalled', function(){ btn.style.display = 'none'; });
 })();
 </script>
 </body>
