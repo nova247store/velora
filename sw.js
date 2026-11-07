@@ -1,7 +1,7 @@
 /* Minimal service worker: lets the app install and open fast.
    Pages load from the network first (always fresh), cache is the fallback. */
 const CACHE = 'velora-admin-v1';
-const SHELL = ['admin.html', 'icon-192.png', 'icon-512.png'];
+const SHELL = ['admin.html', 'logo.png', 'logo.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
